@@ -9,12 +9,12 @@ namespace FoodReddit3_day.Models
 
         [Required]
         [MaxLength(50)]
-        public string Username { get; set; }
+        public string Username { get; set; } = null!;
 
         [Required]
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
-        public string PasswordHash { get; set; }
+        public string PasswordHash { get; set; } = null!;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

@@ -4,6 +4,7 @@ using FoodReddit3_day.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FoodReddit3_day.Migrations
 {
     [DbContext(typeof(FoodForumContext))]
-    partial class FoodForumContextModelSnapshot : ModelSnapshot
+    [Migration("20260418173718_model_Login_creatpostandregisteralready")]
+    partial class model_Login_creatpostandregisteralready
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -4,6 +4,7 @@ using FoodReddit3_day.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FoodReddit3_day.Migrations
 {
     [DbContext(typeof(FoodForumContext))]
-    partial class FoodForumContextModelSnapshot : ModelSnapshot
+    [Migration("20260418120451_FinishModel_create_post_login_register")]
+    partial class FinishModel_create_post_login_register
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -114,128 +117,6 @@ namespace FoodReddit3_day.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Communities");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Spicy and flavorful dishes from Thailand",
-                            Name = "Thai Food"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Sushi, ramen, and delicate flavors",
-                            Name = "Japanese Food"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Kimchi, BBQ, and bold spicy dishes",
-                            Name = "Korean Food"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Description = "Traditional and modern Chinese cuisine",
-                            Name = "Chinese Food"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Description = "Pasta, pizza, and classic Italian flavors",
-                            Name = "Italian Food"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Description = "Burgers, fries, and comfort food",
-                            Name = "American Food"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Description = "Delicious and affordable street eats",
-                            Name = "Street Food"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Description = "Clean eating and nutritious meals",
-                            Name = "Healthy Food"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Description = "Plant-based and cruelty-free dishes",
-                            Name = "Vegan Food"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Description = "Fresh fish, shrimp, and ocean delights",
-                            Name = "Seafood"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            Description = "Smoky grilled meats and BBQ dishes",
-                            Name = "BBQ & Grilled"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            Description = "Sweet treats, cakes, and pastries",
-                            Name = "Desserts"
-                        },
-                        new
-                        {
-                            Id = 13,
-                            Description = "Coffee culture and cozy cafes",
-                            Name = "Cafe & Coffee"
-                        },
-                        new
-                        {
-                            Id = 14,
-                            Description = "Quick and convenient meals",
-                            Name = "Fast Food"
-                        },
-                        new
-                        {
-                            Id = 15,
-                            Description = "Simple and homemade recipes",
-                            Name = "Home Cooking"
-                        },
-                        new
-                        {
-                            Id = 16,
-                            Description = "Luxury and high-end dining experiences",
-                            Name = "Fine Dining"
-                        },
-                        new
-                        {
-                            Id = 17,
-                            Description = "Creative mix of different cuisines",
-                            Name = "Fusion Food"
-                        },
-                        new
-                        {
-                            Id = 18,
-                            Description = "Hot and fiery dishes for spice lovers",
-                            Name = "Spicy Food"
-                        },
-                        new
-                        {
-                            Id = 19,
-                            Description = "Light bites and starters",
-                            Name = "Snacks & Appetizers"
-                        },
-                        new
-                        {
-                            Id = 20,
-                            Description = "Juices, smoothies, and drinks",
-                            Name = "Drinks & Beverages"
-                        });
                 });
 
             modelBuilder.Entity("FoodReddit3_day.Models.Post", b =>

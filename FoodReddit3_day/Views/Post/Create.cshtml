@@ -1,0 +1,29 @@
+﻿@model FoodReddit3_day.Models.PostCreateViewModel
+
+<div class="post-container">
+    <h2>Create Post</h2>
+
+    <form asp-action="Create" asp-controller="Post" method="post">
+     
+
+        <div class="form-group">
+            <label>Community</label>
+            <select asp-for="CommunityId" asp-items="Model.CommunityList" class="select-field">
+                <option value="">Select Community</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Title</label>
+            <input asp-for="Title" class="input-field" placeholder="Title" />
+        </div>
+
+
+        <div class="form-group">
+            <label>Body Text</label>
+            <textarea asp-for="Body" rows="5" class="textarea-field" placeholder="Body Text"></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit">Post</button>
+    </form>
+</div>

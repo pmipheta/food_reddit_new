@@ -1,0 +1,24 @@
+﻿@model FoodReddit3_day.Models.LoginRequest
+
+<div class="login-container">
+    <div><h1>Welcome Back!</h1></div>
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <div class="alert-error">@ViewBag.ErrorMessage</div>
+    }
+    <form asp-action="Login" asp-controller="User" method="post">
+        <div class="group">
+            <div><label>Username</label></div>
+            <input asp-for="Username" type="text" class="Input-field" placeholder="" />
+        </div>
+
+        <div class="group">
+            <div><label>Password</label></div>
+            <input asp-for="PasswordHash" type="text" class="Input-field" placeholder="" />
+        </div>
+
+        <button type="submit" class="button-submit">Login</button>
+    </form>
+
+    <p>sign up? <a asp-action="Register" asp-controller="User">Register</a></p>
+</div>

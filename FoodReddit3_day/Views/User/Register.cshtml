@@ -1,0 +1,29 @@
+﻿@model FoodReddit3_day.Models.RegisterRequest
+
+<div class="container">
+    <div class="header"><h1>Create account</h1></div>
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <div class="alert-error">@ViewBag.ErrorMessage</div>
+    }
+    <form asp-action="Register" asp-controller="User" method="post">
+        <div class="group">
+            <label>Email</label>
+            <input asp-for="Email" type="text" class="Input-Field" placeholder="" />
+        </div>
+
+        <div class="group">
+            <div><label>Username</label></div>
+            <input asp-for="Username" type="text" class="Input-field" placeholder="" />
+        </div>
+
+        <div class="group">
+            <label>Password</label>
+            <input asp-for="PasswordHash" type="text" class="Input-Field" placeholder=""/>
+        </div>
+
+        <button type="submit" class="button-submit">Register</button>
+    </form>
+
+    <p>have account already? <a asp-action="Login" asp-controller="User">Login</a></p>
+</div>
