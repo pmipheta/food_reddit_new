@@ -1,0 +1,137 @@
+@model FoodReddit3_day.Models.Post
+
+@{
+    Layout = null;
+}
+<link rel="stylesheet" href="~/css/details.css" />
+<div class="container-header">
+    <div class="post-header">
+        <div class="header">
+            <span class="header-community">@Model.Community?.Name</span>
+            <span class="header-user"> / @Model.Community?.Name</span>
+            <span class="header-date"> . @Model.CreatedAt.ToString("dd MMM yyyy")</span>
+        </div>
+        <h1 class="Title">@Model.Title</h1>
+        <p class="text">
+            Posted by <strong>@Model.Author?.Username</strong>
+            on @Model.CreatedAt.ToString("f")
+        </p>
+        <div class="information">
+            <p class="recipes">@Model.Body</p>
+        </div>
+        <div class="start-item">
+            <span class="item">▲</span>
+            <span class="item">@Model.Score</span>
+            <span class="item">▼</span>
+            <span class="item">
+                💬
+                @{
+                    int count = 0;
+
+                    if (Model.Comments != null)
+                    {
+                        count = Model.Comments.Count();
+                    }
+                }
+                @count comments
+            </span>
+        </div>
+    </div>
+    <div class="commnet-section">
+        <h3 class="comment-count">💬 Comment
+            @{
+                int counts = 0;
+
+                if (Model.Comments != null)
+                {
+                    counts = Model.Comments.Count();
+                }
+            }
+            Comment(@count)
+        </h3>
+
+        <div class="comment-area">
+            <form asp-action="AddComment" asp-asp-controller="Post" method="post">
+                <input type="hidden" name="postId" value="@Model.Id" />
+                <textarea name="body" placeholder="Comment" required></textarea>
+                <button type="submit">Send Comment</button>
+            </form>
+        </div>
+        <hr />
+        @if (Model.Comments != null && Model.Comments.Any())
+        {
+            var mainComments = Model.Comments.Where(c => c.ParentCommentId == null).OrderByDescending(c => c.CreatedAt);
+
+            foreach(var comment in mainComments)
+            {
+                <div>
+                    <p>
+              
+                        <strong>
+                            @{
+                                string username = "Unknown";
+
+                                if (comment.Author != null && !string.IsNullOrEmpty(comment.Author.Username))
+                                {
+                                    username = comment.Author.Username;
+                                }
+                            }
+                            @username
+                        </strong>
+                        <span> / @comment.CreatedAt.ToString("dd MMM HH:mm")</span>
+
+                    <p>@comment.Text</p>
+
+                    <form asp-action="AddComment" asp-controller="Post" method="post">
+                        <input type="hidden" name="postId" value="@Model.Id" />
+                        <input type="hidden" name="parentCommentId" value="@comment.Id" />
+
+                        <input type="text" name="body" placeholder="Comment" required />
+                        <button type="submit">Reply</button>
+                    </form>
+                    @{
+                        var replies = Model.Comments.Where(c => c.ParentCommentId == comment.Id).OrderBy(c => c.CreatedAt);
+                    }
+                    @if (replies.Any())
+                    {
+                        <div class="replies-container">
+                            @foreach (var reply in replies)
+                            {
+                                <div class="reply-item">
+                                    <p>
+                                        <strong>
+                                                @{
+                                                    string usernames = "Unknown";
+                                                    if(comment.Author  !=null && !string.IsNullOrEmpty(comment.Author.Username))
+                                                    {
+                                                        usernames = comment.Author.Username;
+                                                    }
+                                                }
+                                                @usernames
+                                        </strong>
+                                        @* <strong>@reply.Author?.Username</strong> *@
+                                        <span> / @reply.CreatedAt.ToString("dd MMM HH:mm")</span>
+                                    </p>
+
+                                    <p>@reply.Text</p>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                </div>
+            }
+        }
+        else
+        {
+            <p></p>
+        }
+    </div>
+
+    @* ── ACTIONS ── *@
+    <div class="change">
+        <a asp-action="Index" class="goback">← Back to Feed</a>
+    </div>
+
+</div>
+                

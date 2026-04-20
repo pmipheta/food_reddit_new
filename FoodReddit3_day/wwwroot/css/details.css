@@ -1,0 +1,590 @@
+﻿/* ============================================
+   FoodBoard — Details Page
+   Warm food magazine aesthetic
+   Font: Playfair Display + DM Sans
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+/* ============================================
+   Variables
+   ============================================ */
+:root {
+    --bg: #f5f0eb;
+    --bg-card: #ffffff;
+    --bg-warm: #fdf8f3;
+    --orange: #e8520a;
+    --orange-light: #fff0e8;
+    --orange-dark: #c94207;
+    --amber: #f59e0b;
+    --text-dark: #1a1208;
+    --text-body: #3d3022;
+    --text-muted: #8c7b6b;
+    --text-faint: #b5a898;
+    --border: #e8ddd3;
+    --border-strong: #c9b8a8;
+    --radius-sm: 6px;
+    --radius: 12px;
+    --radius-lg: 18px;
+    --shadow-sm: 0 1px 4px rgba(60,30,10,0.06);
+    --shadow: 0 4px 16px rgba(60,30,10,0.09);
+    --shadow-lg: 0 8px 32px rgba(60,30,10,0.13);
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font: 'DM Sans', system-ui, sans-serif;
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   Reset
+   ============================================ */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text-body);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* ============================================
+   Page Wrapper
+   ============================================ */
+.container-header {
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 40px 20px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ============================================
+   Post Header Card
+   ============================================ */
+.post-header {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    padding: 32px 36px 24px;
+    transition: box-shadow 0.2s var(--ease);
+}
+
+    .post-header:hover {
+        box-shadow: var(--shadow-lg);
+    }
+
+/* ── Breadcrumb / Community Row ── */
+.header {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.header-community {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--orange);
+    background: var(--orange-light);
+    padding: 3px 10px;
+    border-radius: 99px;
+    border: 1px solid rgba(232,82,10,0.18);
+    letter-spacing: 0.02em;
+}
+
+.header-user {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.header-date {
+    font-size: 12px;
+    color: var(--text-faint);
+}
+
+/* ── Post Title ── */
+.Title {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-dark);
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    margin-bottom: 10px;
+}
+
+/* ── Posted by meta ── */
+.text {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+    .text::before {
+        content: '';
+        width: 5px;
+        height: 5px;
+        background: var(--orange);
+        border-radius: 50%;
+        display: inline-block;
+        flex-shrink: 0;
+    }
+
+    .text strong {
+        color: var(--orange);
+        font-weight: 600;
+    }
+
+/* ── Post Body ── */
+.information {
+    background: var(--bg-warm);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+    .information::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: linear-gradient(180deg, var(--orange) 0%, var(--amber) 100%);
+    }
+
+.recipes {
+    font-size: 15px;
+    color: var(--text-body);
+    line-height: 1.75;
+    white-space: pre-wrap;
+}
+
+/* ── Score / Comment Stats ── */
+.start-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.item {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    transition: all 0.15s;
+    cursor: default;
+    line-height: 1;
+}
+
+    .item:first-child,
+    .item:nth-child(3) {
+        color: var(--orange);
+        cursor: pointer;
+        border: 1px solid var(--border);
+        background: var(--bg-warm);
+    }
+
+        .item:first-child:hover {
+            background: var(--orange);
+            color: #fff;
+            border-color: var(--orange);
+        }
+
+        .item:nth-child(3):hover {
+            background: #3b82f6;
+            color: #fff;
+            border-color: #3b82f6;
+        }
+
+    .item:last-child {
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-left: 8px;
+    }
+
+/* ============================================
+   Comment Section
+   ============================================ */
+.commnet-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: 28px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ── Comment Count Header ── */
+.comment-count {
+    font-family: var(--font);
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-faint) !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ── Comment Form Area ── */
+.comment-area {
+    background: var(--bg-warm);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+    .comment-area:focus-within {
+        border-color: var(--orange);
+        box-shadow: 0 0 0 3px rgba(232,82,10,0.08);
+    }
+
+    .comment-area form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .comment-area textarea {
+        width: 100%;
+        border: none;
+        background: transparent;
+        font-family: var(--font);
+        font-size: 14px;
+        color: var(--text-body);
+        resize: none;
+        outline: none;
+        padding: 16px 18px 12px;
+        line-height: 1.6;
+        min-height: 90px;
+    }
+
+        .comment-area textarea::placeholder {
+            color: var(--text-faint);
+        }
+
+    .comment-area button[type="submit"] {
+        align-self: flex-end;
+        font-family: var(--font);
+        font-size: 12px;
+        font-weight: 700;
+        padding: 8px 20px;
+        margin: 0 12px 12px;
+        border-radius: 99px;
+        border: none;
+        background: var(--orange);
+        color: #fff;
+        cursor: pointer;
+        letter-spacing: 0.03em;
+        box-shadow: 0 2px 6px rgba(232,82,10,0.25);
+        transition: all 0.15s;
+    }
+
+        .comment-area button[type="submit"]:hover {
+            background: var(--orange-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(232,82,10,0.35);
+        }
+
+/* ── Divider ── */
+hr {
+    border: none;
+    height: 1px;
+    background: var(--border);
+    margin: 0;
+}
+
+/* ── Single Top-Level Comment ── */
+.commnet-section > div {
+    position: relative;
+    padding: 16px;
+    border-radius: var(--radius);
+    background: var(--bg-warm);
+    border: 1px solid var(--border);
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+    .commnet-section > div:hover {
+        border-color: var(--border-strong);
+        box-shadow: var(--shadow-sm);
+    }
+
+    /* ── Comment Author + Date ── */
+    .commnet-section > div > p:first-child {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+    }
+
+        .commnet-section > div > p:first-child strong {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-dark);
+            background: var(--orange-light);
+            padding: 2px 8px;
+            border-radius: 99px;
+            border: 1px solid rgba(232,82,10,0.15);
+        }
+
+        .commnet-section > div > p:first-child span {
+            font-size: 12px;
+            color: var(--text-faint);
+        }
+
+    /* ── Comment Text ── */
+    .commnet-section > div > p:nth-child(2) {
+        font-size: 14px;
+        color: var(--text-body);
+        line-height: 1.65;
+        margin-bottom: 12px;
+    }
+
+    /* ── Inline Reply Form ── */
+    .commnet-section > div > form {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 14px;
+    }
+
+        .commnet-section > div > form input[type="text"] {
+            flex: 1;
+            border: 1.5px solid var(--border);
+            border-radius: 99px;
+            background: var(--bg-card);
+            font-family: var(--font);
+            font-size: 13px;
+            color: var(--text-body);
+            padding: 7px 16px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+            .commnet-section > div > form input[type="text"]::placeholder {
+                color: var(--text-faint);
+            }
+
+            .commnet-section > div > form input[type="text"]:focus {
+                border-color: var(--orange);
+                box-shadow: 0 0 0 2px rgba(232,82,10,0.1);
+            }
+
+        .commnet-section > div > form button {
+            font-family: var(--font);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 7px 16px;
+            border-radius: 99px;
+            border: none;
+            background: var(--orange);
+            color: #fff;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.15s;
+            letter-spacing: 0.02em;
+            box-shadow: 0 1px 4px rgba(232,82,10,0.25);
+        }
+
+            .commnet-section > div > form button:hover {
+                background: var(--orange-dark);
+                transform: translateY(-1px);
+            }
+
+/* ============================================
+   Replies Container
+   ============================================ */
+.replies-container {
+    margin-top: 12px;
+    padding-left: 18px;
+    border-left: 2px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: border-color 0.15s;
+}
+
+.commnet-section > div:hover .replies-container {
+    border-left-color: rgba(232,82,10,0.35);
+}
+
+/* ── Reply Item ── */
+.reply-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    transition: border-color 0.15s;
+}
+
+    .reply-item:hover {
+        border-color: var(--border-strong);
+    }
+
+    .reply-item p:first-child {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 6px;
+        flex-wrap: wrap;
+    }
+
+        .reply-item p:first-child strong {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .reply-item p:first-child span {
+            font-size: 11px;
+            color: var(--text-faint);
+        }
+
+    .reply-item p:last-child {
+        font-size: 13px;
+        color: var(--text-body);
+        line-height: 1.6;
+    }
+
+/* ============================================
+   Back Button
+   ============================================ */
+.change {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 0;
+}
+
+.goback {
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 20px;
+    border-radius: 99px;
+    text-decoration: none;
+    background: var(--bg-card);
+    color: var(--text-muted);
+    border: 1.5px solid var(--border);
+    transition: all 0.2s var(--ease);
+}
+
+    .goback:hover {
+        background: var(--bg-warm);
+        color: var(--text-body);
+        border-color: var(--border-strong);
+        text-decoration: none;
+    }
+
+/* ============================================
+   Stagger Animation
+   ============================================ */
+.post-header {
+    animation: fadeUp 0.35s var(--ease) 0.05s both;
+}
+
+.commnet-section {
+    animation: fadeUp 0.35s var(--ease) 0.15s both;
+}
+
+.change {
+    animation: fadeUp 0.35s var(--ease) 0.25s both;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 640px) {
+    .container-header {
+        padding: 20px 12px 40px;
+        gap: 14px;
+    }
+
+    .post-header {
+        padding: 22px 18px 18px;
+    }
+
+    .Title {
+        font-size: 22px;
+    }
+
+    .commnet-section {
+        padding: 20px 16px;
+    }
+
+    .information {
+        padding: 16px 18px;
+    }
+
+    .replies-container {
+        padding-left: 12px;
+    }
+
+    .commnet-section > div > form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+        .commnet-section > div > form input[type="text"] {
+            border-radius: var(--radius-sm);
+        }
+
+        .commnet-section > div > form button {
+            border-radius: var(--radius-sm);
+        }
+}
+
+/* ============================================
+   Scrollbar
+   ============================================ */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 3px;
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--text-faint);
+    }

@@ -1,5 +1,7 @@
 ﻿@model FoodReddit3_day.Models.PostCreateViewModel
-
+@{
+    Layout = null;
+}
 <div class="post-container">
     <h2>Create Post</h2>
 
@@ -18,7 +20,10 @@
             <input asp-for="Title" class="input-field" placeholder="Title" />
         </div>
 
-
+        <div class="form-group">
+            <label>Ingredient</label>
+            <input asp-for="Ingredient" class="input-field" placeholder="Ingredient" />
+        </div>
         <div class="form-group">
             <label>Body Text</label>
             <textarea asp-for="Body" rows="5" class="textarea-field" placeholder="Body Text"></textarea>

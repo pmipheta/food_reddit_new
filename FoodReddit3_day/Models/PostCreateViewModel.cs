@@ -8,7 +8,7 @@ namespace FoodReddit3_day.Models
         public string Body { get; set; } = null!;
         public int CommunityId { get; set; }
 
-        
+        public string? Ingredient { get; set; }
         public List<SelectListItem>? CommunityList { get; set; }
     }
 }

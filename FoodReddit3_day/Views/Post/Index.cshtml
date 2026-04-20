@@ -1,0 +1,275 @@
+@model IEnumerable<FoodReddit3_day.Models.Post>
+@{
+    Layout = null;
+    var username = Context.Session.GetString("Username");
+    var isLoggedIn = !string.IsNullOrEmpty(username);
+}
+<link rel="stylesheet" href="~/css/feed.css" />
+
+<nav class="navbar">
+    <div class="navbar-inner">
+        <a asp-action="Index" asp-controller="Post" class="navbar-logo">
+            <div class="logo-icon">🍳</div>
+            <span class="logo-text">FoodBoard</span>
+            
+        </a>
+        <div class="navbar-search">
+            <form asp-action="Index" asp-controller="Post" method="get">
+                <div class="search-wrap">
+                    <span class="search-icon-nav">🔍</span>
+                    <input type="text" name="searchQuery" class="Input-search"
+                           placeholder="Search recipes, ingredients, chefs..." value="@ViewBag.SearchQuery" />
+                    <span class="search-kbd">⌘K</span>
+                </div>
+            </form>
+        </div>
+        <div class="navbar-right">
+            @if (isLoggedIn)
+            {
+                <div class="notif-wrap">
+                    <button class="notif-btn" onclick="toggleNotif()">
+                        🔔
+                        <span class="notif-badge" id="notifBadge">3</span>
+                    </button>
+                    <div class="notif-dropdown" id="notifDropdown">
+                        <div class="notif-header">
+                            <span class="notif-title">Notifications</span>
+                            <button class="notif-clear" onclick="clearNotifs()">Clear all</button>
+                        </div>
+                        <div class="notif-list">
+                            <div class="notif-item unread">
+                                <span class="notif-dot"></span>
+                                <div class="notif-content">
+                                    <p class="notif-text"><strong>Chef_John</strong> replied to your recipe</p>
+                                    <span class="notif-time">2 min ago</span>
+                                </div>
+                            </div>
+                            <div class="notif-item unread">
+                                <span class="notif-dot"></span>
+                                <div class="notif-content">
+                                    <p class="notif-text"><strong>FoodLover99</strong> upvoted your post</p>
+                                    <span class="notif-time">15 min ago</span>
+                                </div>
+                            </div>
+                            <div class="notif-item unread">
+                                <span class="notif-dot"></span>
+                                <div class="notif-content">
+                                    <p class="notif-text"><strong>MasterChef</strong> commented on your recipe</p>
+                                    <span class="notif-time">1 hr ago</span>
+                                </div>
+                            </div>
+                            <div class="notif-item">
+                                <span class="notif-dot read"></span>
+                                <div class="notif-content">
+                                    <p class="notif-text"><strong>CookingPro</strong> followed you</p>
+                                    <span class="notif-time">Yesterday</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="notif-footer"><a href="#">View all</a></div>
+                    </div>
+                </div>
+                <div class="profile-wrap">
+                    <button class="profile-btn" onclick="toggleProfile()">
+                        <div class="profile-avatar-nav">@username?.Substring(0, 1).ToUpper()</div>
+                        <span class="profile-username-nav">@username</span>
+                        <span class="profile-caret">▾</span>
+                    </button>
+                    <div class="profile-dropdown" id="profileDropdown">
+                        <div class="profile-dropdown-header">
+                            <div class="profile-avatar-lg">@username?.Substring(0, 1).ToUpper()</div>
+                            <div>
+                                <p class="profile-name">@username</p>
+                                <p class="profile-sub">My account</p>
+                            </div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <a asp-action="Index" asp-controller="Profile" class="dropdown-item">My Profile</a>
+                        <a asp-action="Create" asp-controller="Post" class="dropdown-item">New Recipe</a>
+                        <div class="dropdown-divider"></div>
+                        <a asp-action="Logout" asp-controller="User" class="dropdown-item danger">Logout</a>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <a asp-action="Login" asp-controller="User" class="btn-login">Login</a>
+                <a asp-action="Register" asp-controller="User" class="btn-register">Sign Up</a>
+            }
+        </div>
+    </div>
+</nav>
+
+<div class="dropdown-backdrop" id="backdrop" onclick="closeAll()"></div>
+
+<!-- HERO BANNER -->
+<div class="feed-hero">
+    <div class="hero-eyebrow">✦ Community Recipes</div>
+    <h1 class="feed-hero-title">Discover <span>Today's</span><br>Best Recipes</h1>
+    <p class="feed-hero-sub">Handcrafted dishes shared by passionate home cooks and chefs around the world.</p>
+    <div class="hero-stats">
+        <div class="hero-stat">
+            <div class="hero-stat-num">@Model.Count()</div>
+            <div class="hero-stat-label">Recipes</div>
+        </div>
+        <div class="hero-stat">
+            <div class="hero-stat-num">@Model.Select(p => p.Author?.Username).Distinct().Count()</div>
+            <div class="hero-stat-label">Chefs</div>
+        </div>
+        <div class="hero-stat">
+            <div class="hero-stat-num">@Model.Select(p => p.Community?.Name).Distinct().Count()</div>
+            <div class="hero-stat-label">Communities</div>
+        </div>
+    </div>
+</div>
+
+<!-- FEED -->
+<div class="feed-container">
+
+    <!-- Category pills (static UI) -->
+    <div class="category-scroll">
+        <a href="#" class="cat-pill active">🍽️ All Recipes</a>
+        <a href="#" class="cat-pill">🥩 Mains</a>
+        <a href="#" class="cat-pill">🥗 Salads</a>
+        <a href="#" class="cat-pill">🍰 Desserts</a>
+        <a href="#" class="cat-pill">🥣 Breakfast</a>
+        <a href="#" class="cat-pill">🍜 Asian</a>
+        <a href="#" class="cat-pill">🍕 Italian</a>
+        <a href="#" class="cat-pill">🥘 Slow Cook</a>
+        <a href="#" class="cat-pill">🌱 Vegan</a>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="feed-toolbar">
+        <div>
+            <div class="feed-title">Today's Recipes</div>
+            <p class="feed-sub">Discover dishes shared by the community</p>
+        </div>
+        <div class="feed-toolbar-left">
+            <button class="filter-btn active">🔥 Hot</button>
+            <button class="filter-btn">⭐ Top</button>
+            <button class="filter-btn">🕒 New</button>
+        </div>
+        @if (isLoggedIn)
+        {
+            <a asp-action="Create" asp-controller="Post" class="btn-create">✏️ New Recipe</a>
+        }
+    </div>
+
+    <!-- Post list -->
+    <div class="post-list">
+        @if (!Model.Any())
+        {
+            <div class="empty-state">
+                <div class="empty-icon">🍽️</div>
+                <p class="empty-title">No recipes yet</p>
+                <p class="empty-message">Be the first to share a recipe!</p>
+                @if (isLoggedIn)
+                {
+                    <a asp-action="Create" asp-controller="Post" class="btn-create">✏️ New Recipe</a>
+                }
+                else
+                {
+                    <a asp-action="Login" asp-controller="User" class="btn-create">Login to Post</a>
+                }
+            </div>
+        }
+        else
+        {
+            @foreach (var post in Model)
+            {
+                <a asp-action="Details" asp-controller="Post" asp-route-id="@post.Id" class="post-card-link">
+                    <div class="post-card">
+
+                        <!-- Meta row -->
+                        <div class="post-card-top">
+                            <span class="community-name">@post.Community?.Name</span>
+                            <span class="meta-dot">·</span>
+                            <div class="author-chip">
+                                <div class="author-av">
+                                    @post.Author?.Username?.Substring(0, 1).ToUpper()
+                                </div>
+                                <span class="author-name">@post.Author?.Username</span>
+                            </div>
+                            <span class="meta-dot">·</span>
+                            <span class="post-time">@post.CreatedAt.ToString("dd MMM yyyy")</span>
+                        </div>
+
+                        <!-- Title & body -->
+                        <div class="post-content">
+                            <h3 class="post-title">@post.Title</h3>
+                            <p class="post-body">
+                                @if (post.Body != null && post.Body.Length > 140)
+                                {
+                                    @post.Body.Substring(0, 140)
+                        
+                                    <span>...</span>
+                                }
+                                else
+                                {
+                                    @post.Body
+                                }
+                            </p>
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="post-footer">
+                            <div class="post-footer-left">
+                                <div class="vote-score">
+                                    <span class="vote-up">▲</span>
+                                    @post.Score
+                                    <span class="vote-dn">▼</span>
+                                </div>
+                            </div>
+                            <span class="read-more">View Recipe →</span>
+                        </div>
+
+                    </div>
+                </a>
+            }
+        }
+    </div>
+</div>
+
+<script>
+    function toggleNotif() {
+        const d = document.getElementById('notifDropdown');
+        const b = document.getElementById('backdrop');
+        const open = d.classList.contains('open');
+        closeAll();
+        if (!open) { d.classList.add('open'); b.classList.add('active'); }
+    }
+    function toggleProfile() {
+        const d = document.getElementById('profileDropdown');
+        const b = document.getElementById('backdrop');
+        const open = d.classList.contains('open');
+        closeAll();
+        if (!open) { d.classList.add('open'); b.classList.add('active'); }
+    }
+    function closeAll() {
+        document.querySelectorAll('.notif-dropdown,.profile-dropdown').forEach(el => el.classList.remove('open'));
+        document.getElementById('backdrop')?.classList.remove('active');
+    }
+    function clearNotifs() {
+        document.querySelectorAll('.notif-item').forEach(el => el.classList.remove('unread'));
+        const badge = document.getElementById('notifBadge');
+        if (badge) badge.style.display = 'none';
+    }
+
+    // Filter button toggle (UI only)
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        });
+    });
+
+    // Category pill toggle (UI only)
+    document.querySelectorAll('.cat-pill').forEach(pill => {
+        pill.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+        });
+    });
+</script>

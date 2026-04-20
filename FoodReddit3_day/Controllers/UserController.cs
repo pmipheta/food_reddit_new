@@ -63,7 +63,7 @@ namespace FoodReddit3_day.Controllers
             {
                 Username = request.Username,
                 PasswordHash = request.PasswordHash,
-                Email = request.Email
+                //Email = request.Email
             };
 
             _db.User.Add(newUser);

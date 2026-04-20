@@ -1,4 +1,4 @@
-﻿@model FoodReddit3_day.Models.RegisterRequest
+@model FoodReddit3_day.Models.RegisterRequest
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     Layout = null;
@@ -387,11 +387,11 @@
     <div class="auth-card">
         <div class="auth-banner">
             <a asp-action="Index" asp-controller="Post" class="auth-logo">
-                @* <div class="auth-logo-icon">🍳</div> *@
+                <div class="auth-logo-icon">🍳</div>
                 <div class="auth-logo-text">Food<span>Board</span></div>
             </a>
             <h1 class="auth-banner-title">Join the community</h1>
-            @* <p class="auth-banner-sub">Share recipes, discover flavours,<br>connect with fellow food lovers.</p> *@
+            <p class="auth-banner-sub">Share recipes, discover flavours,<br>connect with fellow food lovers.</p>
         </div>
 
         <div class="auth-body">
@@ -404,34 +404,34 @@
                 <div class="group">
                     <label for="Username">Username</label>
                     <div class="input-wrap">
-                        @* <span class="input-icon"></span> *@
+                        <span class="input-icon">👤</span>
                         <input asp-for="Username"
                                id="Username"
                                type="text"
                                class="Input-field"
-                               placeholder="" />
+                               placeholder="e.g. chef_julia" />
                     </div>
                 </div>
 
                 <div class="group">
                     <label for="PasswordHash">Password</label>
                     <div class="input-wrap">
-                        <span class="input-icon"></span>
+                        <span class="input-icon">🔒</span>
                         <input asp-for="PasswordHash"
                                id="PasswordHash"
                                type="password"
                                class="Input-Field"
-                               placeholder="" />
+                               placeholder="Create a strong password" />
                         <button type="button" class="toggle-pw" onclick="togglePw()" id="toggleBtn">👁</button>
                     </div>
                 </div>
 
-                <button type="submit" class="button-submit">Create Account</button>
+                <button type="submit" class="button-submit">Create Account →</button>
 
-                @* <p class="terms-hint">
+                <p class="terms-hint">
                     By creating an account you agree to our
                     <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
-                </p> *@
+                </p>
             </form>
 
             <div class="auth-perks">

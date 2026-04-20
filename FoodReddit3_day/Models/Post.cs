@@ -17,7 +17,7 @@ namespace FoodReddit3_day.Models
         public int Score { get; set; } = 0;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        
+        public string? Ingredient { get; set; }
         public int UserId { get; set; }
 
         [ForeignKey("UserId")] 
