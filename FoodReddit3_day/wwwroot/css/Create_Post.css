@@ -1,0 +1,375 @@
+/* ============================================
+   FoodBoard — Create Post  (Premium Edition)
+   Font: Playfair Display + DM Sans
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+    --bg:            #f4ede4;
+    --bg-card:       #ffffff;
+    --bg-warm:       #fdf9f5;
+    --bg-input:      #faf6f1;
+    --orange:        #e8520a;
+    --orange-light:  #fff0e8;
+    --orange-dark:   #c94207;
+    --amber:         #f59e0b;
+    --gold:          #d4a017;
+    --text-dark:     #1a1208;
+    --text-body:     #3d3022;
+    --text-muted:    #8c7b6b;
+    --text-faint:    #b5a898;
+    --border:        #e2d5c8;
+    --border-strong: #c9b8a8;
+    --border-focus:  #e8520a;
+    --radius-sm:     8px;
+    --radius:        14px;
+    --radius-lg:     20px;
+    --shadow-sm:     0 1px 4px rgba(60,30,10,0.06);
+    --shadow:        0 6px 24px rgba(60,30,10,0.10);
+    --shadow-lg:     0 16px 56px rgba(60,30,10,0.14);
+    --font-display:  'Playfair Display', Georgia, serif;
+    --font:          'DM Sans', system-ui, sans-serif;
+    --ease:          cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text-body);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 52px 20px 80px;
+    background-image:
+        radial-gradient(ellipse 60% 40% at 10% 0%, rgba(232,82,10,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 50% at 90% 100%, rgba(245,158,11,0.06) 0%, transparent 60%);
+}
+
+/* ============================================
+   BACK LINK
+   ============================================ */
+.back-link {
+    align-self: flex-start;
+    max-width: 560px;
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-bottom: 16px;
+    transition: color 0.15s;
+}
+.back-link:hover { color: var(--orange); text-decoration: none; }
+.back-link::before { content: '←'; font-size: 14px; }
+
+/* ============================================
+   CARD CONTAINER
+   ============================================ */
+.post-container {
+    width: 100%;
+    max-width: 560px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.5s var(--ease) both;
+}
+
+/* Gold gradient top bar */
+.post-container::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--orange) 0%, var(--amber) 50%, var(--gold) 100%);
+    z-index: 2;
+}
+
+/* ============================================
+   CARD HEADER
+   ============================================ */
+.post-container > h2 {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text-dark);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    padding: 36px 44px 28px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    background: var(--bg-warm);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.post-container > h2::before {
+    content: '🍳';
+    font-size: 24px;
+    line-height: 1;
+}
+.post-container > h2::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 44px;
+    width: 56px; height: 2px;
+    background: var(--orange);
+    border-radius: 2px;
+}
+
+/* ============================================
+   FORM BODY
+   ============================================ */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0 44px 36px;
+}
+
+/* ============================================
+   FORM GROUP
+   ============================================ */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 24px;
+    animation: fadeUp 0.4s var(--ease) both;
+}
+.form-group:nth-child(1) { animation-delay: 0.08s; }
+.form-group:nth-child(2) { animation-delay: 0.14s; }
+.form-group:nth-child(3) { animation-delay: 0.20s; }
+.form-group:nth-child(4) { animation-delay: 0.26s; }
+
+.form-group label {
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.10em;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.form-group label .lbl-icon { font-size: 13px; }
+
+/* ============================================
+   INPUT FIELDS — shared base
+   ============================================ */
+.input-field,
+.textarea-field {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-input);
+    font-family: var(--font);
+    font-size: 14px;
+    color: var(--text-dark);
+    outline: none;
+    transition: border-color 0.2s var(--ease),
+                box-shadow 0.2s var(--ease),
+                background 0.2s;
+}
+.input-field {
+    padding: 11px 16px;
+    height: 46px;
+}
+.textarea-field {
+    padding: 13px 16px;
+    resize: vertical;
+    min-height: 130px;
+    line-height: 1.7;
+}
+.input-field::placeholder,
+.textarea-field::placeholder { color: var(--text-faint); }
+
+.input-field:hover,
+.textarea-field:hover {
+    border-color: var(--border-strong);
+    background: var(--bg-card);
+}
+.input-field:focus,
+.textarea-field:focus {
+    border-color: var(--border-focus);
+    background: var(--bg-card);
+    box-shadow: 0 0 0 3px rgba(232,82,10,0.10);
+}
+
+/* ============================================
+   SELECT — FIXED (no inner lines/outline)
+   ============================================ */
+.select-wrap {
+    position: relative;
+    width: 100%;
+}
+
+.select-field {
+    width: 100%;
+    height: 46px;
+    padding: 0 40px 0 16px;
+
+    /* Reset ALL browser defaults that cause the "line" */
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    outline: none;              /* kills the inner focus rect */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    /* No background-image on the element — arrow handled by ::after */
+    background: var(--bg-input);
+    background-image: none;
+
+    font-family: var(--font);
+    font-size: 14px;
+    color: var(--text-dark);
+    cursor: pointer;
+    transition: border-color 0.2s var(--ease),
+                box-shadow 0.2s var(--ease),
+                background 0.2s;
+    line-height: 1;             /* prevents odd baseline shifts */
+}
+/* Kill the dotted inner rect on Firefox */
+.select-field:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 var(--text-dark);
+}
+/* Kill IE's default arrow */
+.select-field::-ms-expand { display: none; }
+
+.select-field:hover {
+    border-color: var(--border-strong);
+    background: var(--bg-card);
+}
+.select-field:focus {
+    border-color: var(--border-focus);
+    background: var(--bg-card);
+    box-shadow: 0 0 0 3px rgba(232,82,10,0.10);
+}
+
+/* Custom arrow via pseudo on the wrapper */
+.select-wrap::after {
+    content: '';
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4.5px solid transparent;
+    border-right: 4.5px solid transparent;
+    border-top: 5px solid var(--text-muted);
+    pointer-events: none;
+    transition: border-top-color 0.2s;
+}
+.select-wrap:focus-within::after {
+    border-top-color: var(--orange);
+}
+
+/* ============================================
+   CHAR COUNTER (optional quality touch)
+   ============================================ */
+.field-hint {
+    font-size: 11px;
+    color: var(--text-faint);
+    text-align: right;
+    margin-top: 2px;
+}
+
+/* ============================================
+   DIVIDER
+   ============================================ */
+.form-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 28px 0 0;
+}
+
+/* ============================================
+   SUBMIT BUTTON
+   ============================================ */
+.btn-submit {
+    margin-top: 28px;
+    width: 100%;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 14px 24px;
+    border-radius: var(--radius-sm);
+    border: none;
+    background: var(--orange);
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(232,82,10,0.38);
+    transition: background 0.2s var(--ease),
+                box-shadow 0.2s var(--ease),
+                transform 0.15s var(--ease);
+    animation: fadeUp 0.4s var(--ease) 0.32s both;
+    position: relative;
+    overflow: hidden;
+}
+/* Shimmer sweep on hover */
+.btn-submit::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+    transition: left 0.45s var(--ease);
+}
+.btn-submit:hover::before { left: 160%; }
+.btn-submit:hover {
+    background: var(--orange-dark);
+    box-shadow: 0 6px 22px rgba(232,82,10,0.46);
+    transform: translateY(-1px);
+}
+.btn-submit:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(232,82,10,0.30);
+}
+
+/* ============================================
+   ANIMATION
+   ============================================ */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 640px) {
+    body { padding: 24px 12px 48px; }
+    .post-container > h2 { font-size: 21px; padding: 28px 24px 22px; }
+    .post-container > h2::after { left: 24px; }
+    form { padding: 0 24px 28px; }
+    .btn-submit { margin-top: 24px; }
+}
+
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }

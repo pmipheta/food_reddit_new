@@ -13,7 +13,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
-    <style>
+    <link rel="stylesheet" href="~/css/Register.css" />
+    
+    @* <style>
         :root {
             --bg: #f5f0eb;
             --bg-card: #ffffff;
@@ -380,10 +382,10 @@
                 font-size: 22px;
             }
         }
-    </style>
+    </style> *@
 </head>
 <body>
-
+    <script src="~/js/register.js"></script>
     <div class="auth-card">
         <div class="auth-banner">
             <a asp-action="Index" asp-controller="Post" class="auth-logo">
@@ -459,7 +461,7 @@
         </div>
     </div>
 
-    <script>
+  @*   <script>
         function togglePw() {
             const input = document.getElementById('PasswordHash');
             const btn = document.getElementById('toggleBtn');
@@ -471,7 +473,7 @@
                 btn.textContent = '👁';
             }
         }
-    </script>
+    </script> *@
 
 </body>
 </html>

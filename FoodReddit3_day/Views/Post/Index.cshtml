@@ -9,7 +9,7 @@
 <nav class="navbar">
     <div class="navbar-inner">
         <a asp-action="Index" asp-controller="Post" class="navbar-logo">
-            <div class="logo-icon">🍳</div>
+            @* <div class="logo-icon">🍳</div> *@
             <span class="logo-text">FoodBoard</span>
             
         </a>
@@ -19,7 +19,7 @@
                     <span class="search-icon-nav">🔍</span>
                     <input type="text" name="searchQuery" class="Input-search"
                            placeholder="Search recipes, ingredients, chefs..." value="@ViewBag.SearchQuery" />
-                    <span class="search-kbd">⌘K</span>
+                    @* <span class="search-kbd">⌘K</span> *@
                 </div>
             </form>
         </div>
@@ -104,7 +104,7 @@
 
 <!-- HERO BANNER -->
 <div class="feed-hero">
-    <div class="hero-eyebrow">✦ Community Recipes</div>
+    <div class="hero-eyebrow">Community Recipes</div>
     <h1 class="feed-hero-title">Discover <span>Today's</span><br>Best Recipes</h1>
     <p class="feed-hero-sub">Handcrafted dishes shared by passionate home cooks and chefs around the world.</p>
     <div class="hero-stats">
@@ -166,7 +166,7 @@
                 <p class="empty-message">Be the first to share a recipe!</p>
                 @if (isLoggedIn)
                 {
-                    <a asp-action="Create" asp-controller="Post" class="btn-create">✏️ New Recipe</a>
+                    <a asp-action="Create" asp-controller="Post" class="btn-create">New Recipe</a>
                 }
                 else
                 {
