@@ -15,7 +15,7 @@ namespace FoodReddit3_day.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string? searchQuery) // 1. รับค่า searchQuery
+        public async Task<IActionResult> Index(string? searchQuery) 
         {
             int? userId = HttpContext.Session.GetInt32("UserId");
             if (userId == null) return RedirectToAction("Login", "User");
@@ -52,6 +52,62 @@ namespace FoodReddit3_day.Controllers
             ViewBag.SearchQuery = searchQuery;
 
             return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadImage(IFormFile profileImage)
+        {
+            
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null) return RedirectToAction("Login", "User");
+
+            if (profileImage != null && profileImage.Length > 0)
+            {
+                
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+                var extension = Path.GetExtension(profileImage.FileName).ToLower();
+
+                if (!allowedExtensions.Contains(extension))
+                {
+                    
+                    return RedirectToAction("Index");
+                }
+
+                
+                string fileName = userId + "_" + DateTime.Now.Ticks + extension;
+
+                
+                string uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/profiles");
+                if (!Directory.Exists(uploadDir)) Directory.CreateDirectory(uploadDir);
+
+                string filePath = Path.Combine(uploadDir, fileName);
+
+                
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await profileImage.CopyToAsync(stream);
+                }
+
+                
+                var user = await _db.User.FindAsync(userId);
+                if (user != null)
+                {
+                    
+                    if (!string.IsNullOrEmpty(user.ProfileImageUrl))
+                    {
+                        string oldFilePath = Path.Combine(uploadDir, user.ProfileImageUrl);
+                        if (System.IO.File.Exists(oldFilePath))
+                        {
+                            System.IO.File.Delete(oldFilePath);
+                        }
+                    }
+
+                    user.ProfileImageUrl = fileName;
+                    await _db.SaveChangesAsync();
+                }
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }

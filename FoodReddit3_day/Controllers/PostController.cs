@@ -6,7 +6,6 @@ using FoodReddit3_day.Models;
 
 namespace FoodReddit3_day.Controllers
 {
-    
     public class PostController : Controller
     {
         private readonly FoodForumContext _db;
@@ -17,39 +16,69 @@ namespace FoodReddit3_day.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string? searchQuery) 
+        public async Task<IActionResult> Index(string? searchQuery, int? communityId, string? sortOrder, int page = 1)
         {
-            
-            var query = _db.Posts
+            ViewBag.Communities = await _db.Communities.ToListAsync();
+            ViewBag.CurrentCommunityId = communityId;
+            ViewBag.SearchQuery = searchQuery;
+            ViewBag.CurrentSort = sortOrder;
+
+            var posts = _db.Posts
                 .Include(p => p.Author)
                 .Include(p => p.Community)
-                .AsQueryable(); 
+                .Include(p => p.Comments)
+                .Include(p => p.Votes)
+                .AsQueryable();
 
-            
             if (!string.IsNullOrEmpty(searchQuery))
             {
-                
-                query = query.Where(p => p.Title.Contains(searchQuery) || p.Body.Contains(searchQuery));
+                if (searchQuery.StartsWith("@"))
+                {
+                    var username = searchQuery.Substring(1);
+                    posts = posts.Where(p => p.Author.Username.Contains(username));
+                }
+                else
+                {
+                    posts = posts.Where(p =>
+                        p.Title.Contains(searchQuery) ||
+                        (p.Body != null && p.Body.Contains(searchQuery)));
+                }
             }
 
-            
-            var posts = await query.OrderByDescending(p => p.CreatedAt).ToListAsync();
+            if (communityId.HasValue)
+                posts = posts.Where(p => p.CommunityId == communityId.Value);
 
-            
-            ViewBag.SearchQuery = searchQuery;
+            switch (sortOrder)
+            {
+                case "az":
+                    posts = posts.OrderBy(p => p.Title);
+                    break;
+                case "hot":
+                    posts = posts.OrderByDescending(p => p.Comments.Count);
+                    break;
+                default:
+                    posts = posts.OrderByDescending(p => p.CreatedAt);
+                    break;
+            }
 
-            return View(posts);
+            int pageSize = 5;
+            var finalPosts = await posts
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            if (Request.Headers["X-Requested-With"] == "FetchAPI")
+                return PartialView("_PostList", finalPosts);
+
+            return View(finalPosts);
         }
+
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            
             if (HttpContext.Session.GetInt32("UserId") == null)
-            {
                 return RedirectToAction("Login", "User");
-            }
 
-            
             var communities = await _db.Communities.ToListAsync();
             var viewModel = new PostCreateViewModel
             {
@@ -68,9 +97,9 @@ namespace FoodReddit3_day.Controllers
         {
             int? currentUserId = HttpContext.Session.GetInt32("UserId");
             if (currentUserId == null)
-            {
                 return RedirectToAction("Login", "User");
-            }
+
+            ModelState.Remove("CommunityList");
 
             if (ModelState.IsValid)
             {
@@ -79,7 +108,7 @@ namespace FoodReddit3_day.Controllers
                     Title = model.Title,
                     Body = model.Body,
                     CommunityId = model.CommunityId,
-                    Ingredient =model.Ingredient,
+                    Ingredient = model.Ingredient,
                     UserId = currentUserId.Value,
                     CreatedAt = DateTime.UtcNow,
                     Score = 0
@@ -88,7 +117,8 @@ namespace FoodReddit3_day.Controllers
                 _db.Posts.Add(newPost);
                 await _db.SaveChangesAsync();
 
-                return RedirectToAction("Index", "Home");
+                
+                return RedirectToAction("Index", "Post");
             }
 
             
@@ -101,72 +131,122 @@ namespace FoodReddit3_day.Controllers
 
             return View(model);
         }
+
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            
             int? currentUserId = HttpContext.Session.GetInt32("UserId");
             if (currentUserId == null) return RedirectToAction("Login", "User");
 
-            
-            
             var post = await _db.Posts.FirstOrDefaultAsync(p => p.Id == id && p.UserId == currentUserId);
-
             if (post != null)
             {
-                
                 _db.Posts.Remove(post);
                 await _db.SaveChangesAsync();
             }
 
-            
             return RedirectToAction("Index", "Profile");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Vote(int postId, int value)
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+                return Json(new { success = false, message = "Please login first" });
+
+            var post = await _db.Posts.FindAsync(postId);
+            if (post == null)
+                return Json(new { success = false, message = "Post not found" });
+
+            int voteValue = value > 0 ? 1 : -1;
+
+            var existingVote = await _db.Votes
+                .FirstOrDefaultAsync(v => v.PostId == postId && v.UserId == userId.Value);
+
+            if (existingVote != null)
+            {
+                if (existingVote.Value == voteValue)
+                {
+                    post.Score -= voteValue;
+                    _db.Votes.Remove(existingVote);
+                }
+                else
+                {
+                    post.Score -= existingVote.Value;
+                    post.Score += voteValue;
+                    existingVote.Value = voteValue;
+                }
+            }
+            else
+            {
+                _db.Votes.Add(new Vote
+                {
+                    PostId = postId,
+                    UserId = userId.Value,
+                    Value = voteValue
+                });
+                post.Score += voteValue;
+            }
+
+            await _db.SaveChangesAsync();
+            return Json(new { success = true, newScore = post.Score });
+        }
+
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
             var detail = await _db.Posts
                 .Include(p => p.Author)
                 .Include(p => p.Community)
+                .Include(p => p.Votes)
                 .Include(p => p.Comments)
                     .ThenInclude(c => c.Author)
                 .Include(p => p.Comments)
-                    .ThenInclude(c => c.Replies)      
-                        .ThenInclude(r => r.Author)   
+                    .ThenInclude(c => c.Replies)
+                        .ThenInclude(r => r.Author)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (detail == null)
-            {
                 return RedirectToAction("Index");
-            }
+
             return View(detail);
         }
+
         [HttpPost]
         public async Task<IActionResult> AddComment(int postId, string body, int? parentCommentId)
         {
-            // 1. เช็คว่า Login หรือยัง
             int? userId = HttpContext.Session.GetInt32("UserId");
-            if (userId == null) return RedirectToAction("Login", "User");
+            if (userId == null)
+                return Json(new { success = false, message = "Please login first" });
 
-            // 2. เช็คว่าไม่ได้พิมพ์คอมเมนต์ว่างๆ มา
             if (!string.IsNullOrWhiteSpace(body))
             {
-                // 3. สร้างคอมเมนต์ใหม่ (เช็คชื่อตัวแปรใน Model ของคุณด้วยนะครับ ว่าใช้ Body หรือ Content)
                 var newComment = new Comment
                 {
                     PostId = postId,
                     UserId = userId.Value,
-                    Text = body, // ข้อความคอมเมนต์
-                    ParentCommentId = parentCommentId, // ถ้าเป็นการตอบกลับ จะมีเลข ID ของคอมเมนต์แม่ส่งมาด้วย
+                    Text = body,
+                    ParentCommentId = parentCommentId,
                     CreatedAt = DateTime.UtcNow
                 };
 
                 _db.Comments.Add(newComment);
                 await _db.SaveChangesAsync();
+
+                string username = HttpContext.Session.GetString("Username") ?? "Unknown";
+
+                return Json(new
+                {
+                    success = true,
+                    username = username,
+                    text = newComment.Text,
+                    date = newComment.CreatedAt.ToString("dd MMM HH:mm"),
+                    commentId = newComment.Id
+                });
             }
 
-            // 4. เซฟเสร็จแล้ว ให้เด้งกลับไปที่หน้า Details ของโพสต์เดิม
-            return RedirectToAction("Details", new { id = postId });
+            return Json(new { success = false, message = "Comment cannot be empty" });
         }
     }
 }

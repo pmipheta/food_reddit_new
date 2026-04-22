@@ -81,7 +81,52 @@ body {
   height: 5px;
   background: linear-gradient(90deg, var(--orange) 0%, var(--amber) 100%);
 }
+/* ============================================
+   Back to Foodboard Button
+   ============================================ */
 
+/* จัดให้กล่องคลุมอยู่ชิดซ้าย และเว้นระยะด้านล่างนิดนึง */
+.foodboard-nav {
+    display: flex;
+    justify-content: flex-start; /* ดันปุ่มไปชิดซ้ายสุด */
+    margin-bottom: 24px;
+    width: 100%;
+}
+
+/* ตกแต่งตัวปุ่ม */
+.btn-back-board {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    background-color: var(--bg-card, #ffffff);
+    color: var(--text-dark, #1a1208);
+    border: 1px solid var(--border-strong, #ccc);
+    border-radius: 25px; /* ทำให้ขอบมนเป็นทรงแคปซูล */
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease; /* ทำให้เอฟเฟกต์นุ่มนวล */
+}
+
+    /* ตกแต่งลูกศร */
+    .btn-back-board .back-arrow {
+        font-size: 16px;
+        transition: transform 0.3s ease;
+    }
+
+    /* เอฟเฟกต์เวลาเอาเมาส์ไปชี้ (Hover) */
+    .btn-back-board:hover {
+        background-color: #f8f9fa;
+        color: var(--orange, #e8520a); /* เปลี่ยนเป็นสีส้มธีมหลัก */
+        border-color: var(--orange, #e8520a);
+        box-shadow: 0 4px 8px rgba(232, 82, 10, 0.1);
+    }
+
+        /* ให้ลูกศรขยับไปทางซ้ายนิดนึงตอนเอาเมาส์ชี้ (ลูกเล่น UI) */
+        .btn-back-board:hover .back-arrow {
+            transform: translateX(-4px);
+        }
 /* ── Avatar ── */
 .profile-avatar-wrap {
   position: relative;

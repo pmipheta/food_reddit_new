@@ -580,45 +580,78 @@ body {
   padding: 36px 20px 80px;
 }
 
-/* Category pills */
+/* ============================================
+   Category Scroll (แถบเลื่อนหมวดหมู่แนวนอน)
+   ============================================ */
 .category-scroll {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 26px;
-  overflow-x: auto;
-  padding-bottom: 4px;
-  scrollbar-width: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 12px; /* 🌟 เพิ่มพื้นที่ด้านล่างนิดนึง ให้แถบเลื่อนไม่ไปทับปุ่ม */
+    margin-bottom: 20px;
+    cursor: grab;
+    /* 🌟 สำหรับ Firefox: เปิดใช้แถบเลื่อนแบบเส้นเล็ก (บาง) และกำหนดสี (แท่งสีส้ม / รางสีเทาอ่อน) */
+    scrollbar-width: thin;
+    scrollbar-color: var(--orange, #e8520a) #f5f5f5;
 }
-.category-scroll::-webkit-scrollbar { display: none; }
 
+    .category-scroll:active {
+        cursor: grabbing;
+    }
+
+    /* ============================================
+   ตกแต่ง Scrollbar สำหรับ Chrome, Safari, Edge 
+   ============================================ */
+
+    /* 1. ความหนาของแถบเลื่อนแนวนอน */
+    .category-scroll::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    /* 2. สีพื้นหลังของรางเลื่อน */
+    .category-scroll::-webkit-scrollbar-track {
+        background: #f5f5f5;
+        border-radius: 10px; /* ทำให้ขอบมน */
+    }
+
+    /* 3. สีของตัวแท่งจับ (Thumb) */
+    .category-scroll::-webkit-scrollbar-thumb {
+        background: var(--orange, #e8520a);
+        border-radius: 10px; /* ทำให้แท่งจับขอบมน */
+    }
+
+        /* 4. เวลาเอาเมาส์ไปชี้แท่งจับ ให้สีเข้มขึ้นนิดนึง */
+        .category-scroll::-webkit-scrollbar-thumb:hover {
+            background: var(--orange-dark, #c94207);
+        }
+
+/* ============================================
+   Category Pill (ตัวปุ่มแต่ละอัน - โค้ดเดิม)
+   ============================================ */
 .cat-pill {
-  font-family: var(--font);
-  font-size: 13px;
-  font-weight: 500;
-  padding: 7px 16px;
-  border-radius: 99px;
-  border: 1.5px solid var(--border);
-  background: var(--bg-card);
-  color: var(--text-muted);
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.15s;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  text-decoration: none;
+    flex-shrink: 0;
+    padding: 8px 16px;
+    background-color: var(--bg-card, #fff);
+    border: 1px solid var(--border-strong, #ccc);
+    border-radius: 20px;
+    color: var(--text-body, #333);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
 }
-.cat-pill.active {
-  background: var(--orange-light);
-  border-color: rgba(232,82,10,0.3);
-  color: var(--orange);
-  font-weight: 600;
-}
-.cat-pill:hover:not(.active) {
-  border-color: var(--border-strong);
-  color: var(--text-dark);
-  text-decoration: none;
-}
+
+    .cat-pill:hover {
+        background-color: #f9f9f9;
+    }
+
+    .cat-pill.active {
+        background-color: var(--orange, #e8520a);
+        color: white;
+        border-color: var(--orange, #e8520a);
+    }
 
 /* Toolbar */
 .feed-toolbar {
@@ -905,3 +938,69 @@ body {
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
+/* ============================================
+   เพิ่มส่วนนี้ต่อท้าย feed.css
+   Skeleton Loading Cards
+   ============================================ */
+
+.skeleton-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px 24px 16px;
+    box-shadow: var(--shadow-sm);
+    pointer-events: none;
+}
+
+.skeleton-meta,
+.skeleton-title,
+.skeleton-body,
+.skeleton-footer {
+    background: linear-gradient(90deg, var(--border) 25%, var(--bg-warm) 50%, var(--border) 75%);
+    background-size: 200% 100%;
+    border-radius: 99px;
+    animation: shimmer 1.4s infinite;
+}
+
+.skeleton-meta {
+    height: 14px;
+    width: 40%;
+    margin-bottom: 12px;
+}
+
+.skeleton-title {
+    height: 20px;
+    width: 75%;
+    margin-bottom: 10px;
+    border-radius: 6px;
+}
+
+.skeleton-body {
+    height: 14px;
+    width: 90%;
+    margin-bottom: 6px;
+    border-radius: 4px;
+}
+
+.skeleton-footer {
+    height: 12px;
+    width: 30%;
+    margin-top: 14px;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* post-comments stat */
+.post-comments {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 500;
+}

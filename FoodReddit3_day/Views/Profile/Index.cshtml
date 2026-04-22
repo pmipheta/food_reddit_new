@@ -10,7 +10,11 @@
 
     @* {{-- ── PROFILE CARD ── --}} *@
     <div class="profile-card">
-
+        <div class="foodboard-nav">
+            <a asp-action="Index" asp-controller="Post" class="btn-back-board">
+                <span class="back-arrow">←</span> Back to Foodboard
+            </a>
+        </div>
         <div class="profile-avatar-wrap">
             @if (string.IsNullOrEmpty(Model.ProfileImageUrl))
             {
@@ -18,7 +22,7 @@
             }
             else
             {
-                <img src="~/images/@Model.ProfileImageUrl" class="profile-avatar" alt="Profile Picture" />
+                <img src="~/images/profiles/@Model.ProfileImageUrl" class="profile-avatar" alt="Profile Picture" />
             }
             <div class="avatar-ring"></div>
         </div>

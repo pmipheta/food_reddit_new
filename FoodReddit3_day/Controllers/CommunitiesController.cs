@@ -19,38 +19,12 @@ namespace FoodReddit3_day.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var communities = await _db.Communities.ToListAsync();
+            
+            var communities = await _db.Communities
+                                       .Include(c => c.Posts)
+                                       .ToListAsync();
 
             return View(communities);
-        }
-        [HttpGet]
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Create(CreateCommunityRequest request)
-        {
-            var exist = await _db.Communities.AnyAsync(u => u.Name == request.Name);
-            if (exist)
-            {
-                ViewBag.Error = "This community have already";
-                return View();
-            }
-
-            var newCommunities = new Community
-            {
-                Name = request.Name,
-                Description = request.Description ?? ""
-            };
-
-            _db.Communities.Add(newCommunities);
-
-            await _db.SaveChangesAsync();
-
-            
-            return RedirectToAction("Index");
         }
     }
 

@@ -1,0 +1,51 @@
+﻿@model IEnumerable<FoodReddit3_day.Models.Community>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Browse Categories - FoodBoard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/community.css" />
+</head>
+<body>
+
+    <div class="header">
+        <div>
+            <h1 class="title">Explore Categories</h1>
+            <p style="color: var(--text-muted); margin-top: 5px;">Find exactly what you're craving today.</p>
+        </div>
+        <a asp-controller="Post" asp-action="Index" class="btn-back">← Back to Feed</a>
+    </div>
+
+    <div class="category-grid">
+        @if (Model != null)
+        {
+            foreach (var item in Model)
+            {
+                <a asp-controller="Post" asp-action="Index" asp-route-communityId="@item.Id" class="category-card">
+                    <h2 class="category-name">@item.Name</h2>
+                    <p class="category-desc">@item.Description</p>
+                        @{
+                            int recipesCount = 0;
+                            if (item.Posts != null)
+                            {
+                                recipesCount = item.Posts.Count;
+                            }
+                         }
+
+                    <span>
+                        Recipes : @recipesCount Recipes
+                    </span>
+                </a>
+            }
+        }
+    </div>
+
+</body>
+</html>

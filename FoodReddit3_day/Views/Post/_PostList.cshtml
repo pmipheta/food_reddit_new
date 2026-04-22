@@ -1,0 +1,53 @@
+@model IEnumerable<FoodReddit3_day.Models.Post>
+
+@if (!Model.Any())
+{
+    <div class="empty-state">
+        <div class="empty-icon">🔍</div>
+        <p class="empty-title">No recipes found</p>
+        <p class="empty-message">Try searching with different keywords</p>
+    </div>
+}
+else
+{
+    @foreach (var post in Model)
+    {
+        <a asp-action="Details" asp-controller="Post" asp-route-id="@post.Id" class="post-card-link">
+            <div class="post-card">
+                <div class="post-meta">
+                    <span class="community-name">@post.Community?.Name</span>
+                    <span class="meta-dot">·</span>
+                    <span class="author-name">@post.Author?.Username</span>
+                    <span class="meta-dot">·</span>
+                    <span class="post-time">@post.CreatedAt.ToString("dd MMM yyyy")</span>
+                </div>
+                <div class="post-content">
+                    <h3 class="post-title">@post.Title</h3>
+                    <p class="post-body">
+                        @if (post.Body != null && post.Body.Length > 120)
+                        {
+                            @post.Body.Substring(0, 120)<span>...</span>
+                        }
+                        else
+                        {
+                            @post.Body
+                        }
+                    </p>
+                </div>
+                <div class="post-footer">
+                    <div class="post-footer-left">
+                        <span class="post-score">
+                            <span class="score-icon">▲</span>
+                            @post.Score
+                            <span class="score-icon">▼</span>
+                        </span>
+                        <span class="post-comments">
+                            💬 @post.Comments?.Count comments
+                        </span>
+                    </div>
+                    <span class="read-more">Read recipe →</span>
+                </div>
+            </div>
+        </a>
+    }
+}

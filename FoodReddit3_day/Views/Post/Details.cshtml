@@ -2,8 +2,18 @@
 
 @{
     Layout = null;
+    var userId = Context.Session.GetInt32("UserId"); // 🌟 ดึงไอดีผู้ใช้
+
+    // 🌟 เช็คว่า User คนนี้โหวตหรือยัง
+    int currentUserVote = 0;
+    if (userId != null && Model.Votes != null)
+    {
+        var vote = Model.Votes.FirstOrDefault(v => v.UserId == userId);
+        if (vote != null) currentUserVote = vote.Value;
+    }
 }
 <link rel="stylesheet" href="~/css/details.css" />
+<script src="~/js/Vote.js"></script>
 <div class="container-header">
     <div class="post-header">
         <div class="header">
@@ -20,14 +30,19 @@
             <p class="recipes">@Model.Body</p>
         </div>
         <div class="start-item">
-            <span class="item">▲</span>
-            <span class="item">@Model.Score</span>
-            <span class="item">▼</span>
+            <span id="upvote-@Model.Id" class="item score-icon @(currentUserVote == 1 ? "upvoted" : "")"
+                  style="cursor: pointer;" onclick="votePost(@Model.Id, 1)">▲</span>
+
+            <span class="item score-number @(currentUserVote == 1 ? "upvoted" : currentUserVote == -1 ? "downvoted" : "")"
+                  id="score-@Model.Id">@Model.Score</span>
+
+            <span id="downvote-@Model.Id" class="item score-icon @(currentUserVote == -1 ? "downvoted" : "")"
+                  style="cursor: pointer;" onclick="votePost(@Model.Id, -1)">▼</span>
+
             <span class="item">
                 💬
                 @{
                     int count = 0;
-
                     if (Model.Comments != null)
                     {
                         count = Model.Comments.Count();
@@ -51,81 +66,83 @@
         </h3>
 
         <div class="comment-area">
-            <form asp-action="AddComment" asp-asp-controller="Post" method="post">
-                <input type="hidden" name="postId" value="@Model.Id" />
-                <textarea name="body" placeholder="Comment" required></textarea>
+            <form id="mainCommentForm" onsubmit="submitMainComment(event, @Model.Id)">
+                <textarea id="main-comment-body" placeholder="Comment" required></textarea>
                 <button type="submit">Send Comment</button>
             </form>
         </div>
         <hr />
-        @if (Model.Comments != null && Model.Comments.Any())
-        {
-            var mainComments = Model.Comments.Where(c => c.ParentCommentId == null).OrderByDescending(c => c.CreatedAt);
-
-            foreach(var comment in mainComments)
+        <div id="all-comments-list">
+            @if (Model.Comments != null && Model.Comments.Any())
             {
-                <div>
-                    <p>
-              
-                        <strong>
-                            @{
-                                string username = "Unknown";
+                var mainComments = Model.Comments.Where(c => c.ParentCommentId == null).OrderByDescending(c => c.CreatedAt);
 
-                                if (comment.Author != null && !string.IsNullOrEmpty(comment.Author.Username))
-                                {
-                                    username = comment.Author.Username;
+                foreach (var comment in mainComments)
+                {
+                    <div>
+                        <p>
+
+                            <strong>
+                                @{
+                                    string username = "Unknown";
+
+                                    if (comment.Author != null && !string.IsNullOrEmpty(comment.Author.Username))
+                                    {
+                                        username = comment.Author.Username;
+                                    }
                                 }
-                            }
-                            @username
-                        </strong>
-                        <span> / @comment.CreatedAt.ToString("dd MMM HH:mm")</span>
+                                @username
+                            </strong>
+                            <span> / @comment.CreatedAt.ToString("dd MMM HH:mm")</span>
 
-                    <p>@comment.Text</p>
+                        <p>@comment.Text</p>
 
-                    <form asp-action="AddComment" asp-controller="Post" method="post">
-                        <input type="hidden" name="postId" value="@Model.Id" />
-                        <input type="hidden" name="parentCommentId" value="@comment.Id" />
+                        <form asp-action="AddComment" asp-controller="Post" method="post">
+                            <input type="hidden" name="postId" value="@Model.Id" />
+                            <input type="hidden" name="parentCommentId" value="@comment.Id" />
 
-                        <input type="text" name="body" placeholder="Comment" required />
-                        <button type="submit">Reply</button>
-                    </form>
-                    @{
-                        var replies = Model.Comments.Where(c => c.ParentCommentId == comment.Id).OrderBy(c => c.CreatedAt);
-                    }
-                    @if (replies.Any())
-                    {
-                        <div class="replies-container">
-                            @foreach (var reply in replies)
-                            {
-                                <div class="reply-item">
-                                    <p>
-                                        <strong>
+                            <input type="text" name="body" placeholder="Comment" required />
+                            <button type="submit">Reply</button>
+                        </form>
+                        @{
+                            var replies = Model.Comments.Where(c => c.ParentCommentId == comment.Id).OrderBy(c => c.CreatedAt);
+                        }
+                        @if (replies.Any())
+                        {
+                            <div class="replies-container">
+                                @foreach (var reply in replies)
+                                {
+                                    <div class="reply-item">
+                                        <p>
+                                            <strong>
                                                 @{
                                                     string usernames = "Unknown";
-                                                    if(comment.Author  !=null && !string.IsNullOrEmpty(comment.Author.Username))
+                                                    if (comment.Author != null && !string.IsNullOrEmpty(comment.Author.Username))
                                                     {
                                                         usernames = comment.Author.Username;
                                                     }
                                                 }
                                                 @usernames
-                                        </strong>
-                                        @* <strong>@reply.Author?.Username</strong> *@
-                                        <span> / @reply.CreatedAt.ToString("dd MMM HH:mm")</span>
-                                    </p>
+                                            </strong>
+                                            @* <strong>@reply.Author?.Username</strong> *@
+                                            <span> / @reply.CreatedAt.ToString("dd MMM HH:mm")</span>
+                                        </p>
 
-                                    <p>@reply.Text</p>
-                                </div>
-                            }
-                        </div>
-                    }
+                                        <p>@reply.Text</p>
+                                    </div>
+                                }
+                            </div>
+                        }
 
-                </div>
+                    </div>
+                }
             }
-        }
-        else
-        {
-            <p></p>
-        }
+            else
+            {
+                <p></p>
+            }
+        </div>
+
     </div>
 
     @* ── ACTIONS ── *@
@@ -134,4 +151,4 @@
     </div>
 
 </div>
-                
+
