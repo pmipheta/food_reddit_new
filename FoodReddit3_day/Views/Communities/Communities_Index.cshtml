@@ -1,8 +1,46 @@
-﻿@model IEnumerable<FoodReddit3_day.Models.Community>
+@model IEnumerable<FoodReddit3_day.Models.Community>
 @{
     Layout = null;
     var totalRecipes = Model?.Sum(c => c.Posts?.Count ?? 0) ?? 0;
     var totalCommunities = Model?.Count() ?? 0;
+
+    // Map community names to food emojis
+    var emojiMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+    {
+        { "breakfast",   "🥣" }, { "lunch",      "🥗" }, { "dinner",     "🍽️" },
+        { "dessert",     "🍰" }, { "desserts",    "🍰" }, { "snacks",     "🍿" },
+        { "italian",     "🍕" }, { "asian",       "🍜" }, { "mexican",    "🌮" },
+        { "american",    "🍔" }, { "french",      "🥐" }, { "japanese",   "🍣" },
+        { "thai",        "🍲" }, { "indian",      "🍛" }, { "chinese",    "🥡" },
+        { "vegan",       "🌱" }, { "vegetarian",  "🥦" }, { "healthy",    "🥑" },
+        { "seafood",     "🦞" }, { "grilling",    "🔥" }, { "bbq",        "🥩" },
+        { "baking",      "🧁" }, { "bread",       "🍞" }, { "pasta",      "🍝" },
+        { "soup",        "🍵" }, { "salad",       "🥗" }, { "drinks",     "🥤" },
+        { "cocktails",   "🍹" }, { "coffee",      "☕" }, { "pizza",      "🍕" },
+        { "burger",      "🍔" }, { "sushi",       "🍱" }, { "noodles",    "🍜" },
+        { "steak",       "🥩" }, { "chicken",     "🍗" }, { "fish",       "🐟" },
+        { "cake",        "🎂" }, { "chocolate",   "🍫" }, { "ice cream",  "🍦" },
+        { "smoothie",    "🥤" }, { "sandwich",    "🥪" }, { "tacos",      "🌮" },
+    };
+
+    string GetEmoji(string name)
+    {
+        if (string.IsNullOrEmpty(name)) return "🍴";
+        var lower = name.ToLower().Trim();
+        foreach (var kv in emojiMap)
+            if (lower.Contains(kv.Key)) return kv.Value;
+        // Fallback based on first letter
+        return lower[0] switch
+        {
+            'a' => "🍎", 'b' => "🫐", 'c' => "🥕", 'd' => "🍩",
+            'e' => "🥚", 'f' => "🍟", 'g' => "🍇", 'h' => "🌶️",
+            'i' => "🍦", 'j' => "🫙", 'k' => "🥝", 'l' => "🍋",
+            'm' => "🍄", 'n' => "🍜", 'o' => "🍊", 'p' => "🥞",
+            'q' => "🫕", 'r' => "🍚", 's' => "🥗", 't' => "🌮",
+            'u' => "🍡", 'v' => "🥦", 'w' => "🧇", 'x' => "🍡",
+            'y' => "🫚", 'z' => "🫛", _ => "🍴"
+        };
+    }
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -17,6 +55,7 @@
 </head>
 <body>
 
+    <!-- ══════════════ HERO ══════════════ -->
     <div class="page-hero">
         <div class="hero-glow-1"></div>
         <div class="hero-glow-2"></div>
@@ -26,6 +65,7 @@
         <p class="hero-sub">Curated recipe collections for every craving, cuisine, and cooking style.</p>
     </div>
 
+    <!-- ══════════════ PAGE NAV ══════════════ -->
     <div class="page-nav">
         <a asp-controller="Post" asp-action="Index" class="btn-back">
             <span class="back-arrow">←</span> Back to Feed
@@ -35,11 +75,13 @@
         </span>
     </div>
 
+    <!-- ══════════════ CATEGORY GRID ══════════════ -->
     <div class="category-grid">
         @if (Model != null && Model.Any())
         {
             foreach (var item in Model)
             {
+                var emoji = GetEmoji(item.Name ?? "");
                 var recipeCount = item.Posts?.Count ?? 0;
 
                 <a asp-controller="Post" asp-action="Index"
@@ -47,13 +89,16 @@
                    class="category-card">
                     <div class="card-inner">
 
+                        <!-- Top: icon + name -->
                         <div class="card-top">
+                            <div class="card-icon">@emoji</div>
                             <div class="card-title-wrap">
                                 <h2 class="category-name">@item.Name</h2>
                                 <span class="category-tag">Community</span>
                             </div>
                         </div>
 
+                        <!-- Description -->
                         <p class="category-desc">
                             @if (!string.IsNullOrWhiteSpace(item.Description))
                             {
@@ -65,6 +110,7 @@
                             }
                         </p>
 
+                        <!-- Footer -->
                         <div class="card-footer">
                             <span class="recipe-count">
                                 <span class="recipe-count-dot"></span>

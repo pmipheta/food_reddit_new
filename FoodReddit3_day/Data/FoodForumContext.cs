@@ -1,6 +1,5 @@
-﻿using FoodReddit3_day.Models; 
+﻿using FoodReddit3_day.Models;
 using Microsoft.EntityFrameworkCore;
-
 
 namespace FoodReddit3_day.Data
 {
@@ -14,10 +13,10 @@ namespace FoodReddit3_day.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Vote> Votes { get; set; }
         public DbSet<AiRecipe> AiRecipes { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
             modelBuilder.Entity<Comment>()
                 .HasOne(c => c.ParentComment)
                 .WithMany(c => c.Replies)
@@ -36,6 +35,13 @@ namespace FoodReddit3_day.Data
                 .HasForeignKey(p => p.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            
+            modelBuilder.Entity<Notification>()
+                .HasOne(n => n.Post)
+                .WithMany() 
+                .HasForeignKey(n => n.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
+           
 
             modelBuilder.Entity<Community>().HasData(
                 new Community { Id = 1, Name = "Thai Food", Description = "Spicy and flavorful dishes from Thailand" },

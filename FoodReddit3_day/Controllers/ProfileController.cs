@@ -109,5 +109,42 @@ namespace FoodReddit3_day.Controllers
 
             return RedirectToAction("Index");
         }
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            int? currentUserId = HttpContext.Session.GetInt32("UserId");
+            if (currentUserId == null) return Json(new { success = false, message = "Please login first" });
+
+            // Include Comments and Votes so EF Core knows about them
+            var post = await _db.Posts
+                .Include(p => p.Comments)
+                .Include(p => p.Votes)
+                .FirstOrDefaultAsync(p => p.Id == id && p.UserId == currentUserId);
+
+            if (post != null)
+            {
+                // 1. Remove related Notifications
+                var relatedNotifications = _db.Notifications.Where(n => n.PostId == id);
+                _db.Notifications.RemoveRange(relatedNotifications);
+
+                // 2. Remove related Votes and Comments to satisfy Foreign Key constraints
+                if (post.Votes != null && post.Votes.Any())
+                    _db.RemoveRange(post.Votes);
+
+                if (post.Comments != null && post.Comments.Any())
+                    _db.RemoveRange(post.Comments);
+
+                // 3. Delete the Post itself
+                _db.Posts.Remove(post);
+
+                await _db.SaveChangesAsync();
+
+                return Json(new { success = true });
+            }
+
+            return Json(new { success = false, message = "Post not found or unauthorized" });
+        }
+
     }
 }

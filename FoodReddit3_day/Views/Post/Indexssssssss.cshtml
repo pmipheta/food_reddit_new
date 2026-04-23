@@ -8,14 +8,11 @@
 <script src="~/js/Post.js"></script>
 <script src="~/js/notification.js"></script>
 
-<!-- ══════════════ NAVBAR ══════════════ -->
 <nav class="navbar">
     <div class="navbar-inner">
 
         <a asp-action="Index" asp-controller="Post" class="navbar-logo">
-            <div class="logo-icon">🍳</div>
-            <span class="logo-text">FoodBoard</span>
-            @* <span class="logo-sup">Beta</span> *@
+            🍳 <span class="logo-text">FoodBoard</span>
         </a>
 
         <div class="navbar-search">
@@ -25,7 +22,6 @@
                     <input type="text" name="searchQuery" class="Input-search"
                            placeholder="Search recipes, ingredients, chefs..."
                            value="@ViewBag.SearchQuery" />
-                    @* <span class="search-kbd">⌘K</span> *@
                     <div id="search-suggestions" class="suggestions-list"></div>
                 </div>
             </form>
@@ -70,10 +66,10 @@
                             </div>
                         </div>
                         <div class="dropdown-divider"></div>
-                        <a asp-action="Index" asp-controller="Profile" class="dropdown-item">My Profile</a>
-                        <a asp-action="Create" asp-controller="Post" class="dropdown-item">New Recipe</a>
+                        <a asp-action="Index"  asp-controller="Profile" class="dropdown-item">👤 My Profile</a>
+                        <a asp-action="Create" asp-controller="Post"    class="dropdown-item">✏️ New Recipe</a>
                         <div class="dropdown-divider"></div>
-                        <a asp-action="Logout" asp-controller="User" class="dropdown-item danger">Logout</a>
+                        <a asp-action="Logout" asp-controller="User"    class="dropdown-item danger">🚪 Logout</a>
                     </div>
                 </div>
             }
@@ -82,7 +78,7 @@
                 <a asp-action="Index" asp-controller="Communities" class="reddit-btn">
                     Categories
                 </a>
-                <a asp-action="Login" asp-controller="User" class="btn-login">Login</a>
+                <a asp-action="Login"    asp-controller="User" class="btn-login">Login</a>
                 <a asp-action="Register" asp-controller="User" class="btn-register">Sign Up</a>
             }
         </div>
@@ -94,15 +90,9 @@
 
 <!-- ══════════════ HERO ══════════════ -->
 <div class="feed-hero">
-    <!-- Decorative glow blobs -->
-    <div class="hero-glow-1"></div>
-    <div class="hero-glow-2"></div>
-    <div class="hero-glow-3"></div>
-
     <div class="hero-eyebrow">Community Recipes</div>
     <h1 class="feed-hero-title">Discover <span>Today's</span><br>Best Recipes</h1>
-    @* <p class="feed-hero-sub">Handcrafted dishes shared by passionate home cooks and chefs around the world.</p> *@
-
+    <p class="feed-hero-sub">Handcrafted dishes shared by passionate home cooks and chefs around the world.</p>
     <div class="hero-stats">
         <div class="hero-stat">
             <div class="hero-stat-num">@Model.Count()</div>
@@ -122,9 +112,10 @@
 <!-- ══════════════ FEED ══════════════ -->
 <div class="feed-container">
 
-    <!-- Category pills from DB -->
+    <!-- Category pills -->
     <div class="category-scroll">
         <a asp-action="Index" asp-controller="Post"
+           data-community-id=""
            class="cat-pill @(ViewBag.CurrentCommunityId == null ? "active" : "")">
             🍽️ All Recipes
         </a>
@@ -134,6 +125,7 @@
             {
                 <a asp-action="Index" asp-controller="Post"
                    asp-route-communityId="@category.Id"
+                   data-community-id="@category.Id"
                    class="cat-pill @(ViewBag.CurrentCommunityId == category.Id ? "active" : "")">
                     @category.Name
                 </a>
@@ -149,15 +141,15 @@
         </div>
 
         <div class="feed-toolbar-left">
-            <a asp-action="Index" asp-route-sortOrder="new"
+            <a asp-action="Index" asp-route-sortOrder="new" data-sort="new"
                class="filter-btn @(string.IsNullOrEmpty(ViewBag.CurrentSort) || ViewBag.CurrentSort == "new" ? "active" : "")">
                 New
             </a>
-            <a asp-action="Index" asp-route-sortOrder="az"
+            <a asp-action="Index" asp-route-sortOrder="az" data-sort="az"
                class="filter-btn @(ViewBag.CurrentSort == "az" ? "active" : "")">
                 A–Z
             </a>
-            <a asp-action="Index" asp-route-sortOrder="hot"
+            <a asp-action="Index" asp-route-sortOrder="hot" data-sort="hot"
                class="filter-btn @(ViewBag.CurrentSort == "hot" ? "active" : "")">
                 Hot
             </a>

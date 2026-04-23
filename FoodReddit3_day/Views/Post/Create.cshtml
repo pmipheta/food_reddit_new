@@ -3,7 +3,7 @@
     Layout = null;
 }
 <link rel="stylesheet" href="~/css/Create_Post.css" />
-
+<script src="~/js/generate_ai.js"></script>
 <a asp-action="Index" asp-controller="Post" class="back-link">Back to Feed</a>
 
 <div class="post-container">
@@ -26,12 +26,20 @@
 
         <div class="form-group">
             <label>Ingredients</label>
-            <input asp-for="Ingredient" class="input-field" placeholder="chicken, garlic, olive oil…" />
+            <input asp-for="Ingredient" id="ingredient-input" class="input-field" placeholder="chicken, garlic, olive oil…" />
         </div>
 
         <div class="form-group">
+            <button type="button" id="AI-Button" class="AI-Button"
+                    onclick="generateAiRecipe('@Url.Action("GenerateRecipeFromGemini", "Post")')">
+                AI Generate Recipes
+            </button>
+        </div>
+        
+
+        <div class="form-group">
             <label>Description</label>
-            <textarea asp-for="Body" rows="5" class="textarea-field"
+            <textarea asp-for="Body" id="body-textarea" rows="5" class="textarea-field"
                       placeholder="Share your recipe"></textarea>
         </div>
 

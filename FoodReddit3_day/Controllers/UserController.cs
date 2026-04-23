@@ -39,9 +39,18 @@ namespace FoodReddit3_day.Controllers
             HttpContext.Session.SetString("Username", user.Username);
 
             
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Post");
         }
 
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            
+            HttpContext.Session.Clear();
+
+
+            return RedirectToAction("Index", "Post");
+        }
         [HttpGet]
         public IActionResult Register()
         {

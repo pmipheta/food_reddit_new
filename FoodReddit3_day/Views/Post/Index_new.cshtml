@@ -15,7 +15,7 @@
         <a asp-action="Index" asp-controller="Post" class="navbar-logo">
             <div class="logo-icon">🍳</div>
             <span class="logo-text">FoodBoard</span>
-            @* <span class="logo-sup">Beta</span> *@
+            <span class="logo-sup">Beta</span>
         </a>
 
         <div class="navbar-search">
@@ -25,7 +25,7 @@
                     <input type="text" name="searchQuery" class="Input-search"
                            placeholder="Search recipes, ingredients, chefs..."
                            value="@ViewBag.SearchQuery" />
-                    @* <span class="search-kbd">⌘K</span> *@
+                    <span class="search-kbd">⌘K</span>
                     <div id="search-suggestions" class="suggestions-list"></div>
                 </div>
             </form>
@@ -35,7 +35,7 @@
             @if (isLoggedIn)
             {
                 <a asp-action="Index" asp-controller="Communities" class="reddit-btn">
-                    Categories
+                    🍽️ Categories
                 </a>
 
                 <div class="notif-wrap">
@@ -70,17 +70,17 @@
                             </div>
                         </div>
                         <div class="dropdown-divider"></div>
-                        <a asp-action="Index" asp-controller="Profile" class="dropdown-item">My Profile</a>
-                        <a asp-action="Create" asp-controller="Post" class="dropdown-item">New Recipe</a>
+                        <a asp-action="Index" asp-controller="Profile" class="dropdown-item">👤 My Profile</a>
+                        <a asp-action="Create" asp-controller="Post" class="dropdown-item">✏️ New Recipe</a>
                         <div class="dropdown-divider"></div>
-                        <a asp-action="Logout" asp-controller="User" class="dropdown-item danger">Logout</a>
+                        <a asp-action="Logout" asp-controller="User" class="dropdown-item danger">🚪 Logout</a>
                     </div>
                 </div>
             }
             else
             {
                 <a asp-action="Index" asp-controller="Communities" class="reddit-btn">
-                    Categories
+                    🍽️ Categories
                 </a>
                 <a asp-action="Login" asp-controller="User" class="btn-login">Login</a>
                 <a asp-action="Register" asp-controller="User" class="btn-register">Sign Up</a>
@@ -101,7 +101,7 @@
 
     <div class="hero-eyebrow">Community Recipes</div>
     <h1 class="feed-hero-title">Discover <span>Today's</span><br>Best Recipes</h1>
-    @* <p class="feed-hero-sub">Handcrafted dishes shared by passionate home cooks and chefs around the world.</p> *@
+    <p class="feed-hero-sub">Handcrafted dishes shared by passionate home cooks and chefs around the world.</p>
 
     <div class="hero-stats">
         <div class="hero-stat">
@@ -151,7 +151,7 @@
         <div class="feed-toolbar-left">
             <a asp-action="Index" asp-route-sortOrder="new"
                class="filter-btn @(string.IsNullOrEmpty(ViewBag.CurrentSort) || ViewBag.CurrentSort == "new" ? "active" : "")">
-                New
+                🕒 New
             </a>
             <a asp-action="Index" asp-route-sortOrder="az"
                class="filter-btn @(ViewBag.CurrentSort == "az" ? "active" : "")">
@@ -159,7 +159,7 @@
             </a>
             <a asp-action="Index" asp-route-sortOrder="hot"
                class="filter-btn @(ViewBag.CurrentSort == "hot" ? "active" : "")">
-                Hot
+                🔥 Hot
             </a>
         </div>
 
@@ -179,7 +179,7 @@
                 <p class="empty-message">Be the first to share a recipe!</p>
                 @if (isLoggedIn)
                 {
-                    <a asp-action="Create" asp-controller="Post" class="btn-create">New Recipe</a>
+                    <a asp-action="Create" asp-controller="Post" class="btn-create">✏️ New Recipe</a>
                 }
                 else
                 {
@@ -196,3 +196,28 @@
     </div>
 
 </div>
+
+<script>
+    /* ── Dropdowns ── */
+    function toggleNotif() {
+        const d = document.getElementById('notifDropdown');
+        const open = d.classList.contains('open');
+        closeAll();
+        if (!open) { d.classList.add('open'); document.getElementById('backdrop').classList.add('active'); }
+    }
+    function toggleProfile() {
+        const d = document.getElementById('profileDropdown');
+        const open = d.classList.contains('open');
+        closeAll();
+        if (!open) { d.classList.add('open'); document.getElementById('backdrop').classList.add('active'); }
+    }
+    function closeAll() {
+        document.querySelectorAll('.notif-dropdown,.profile-dropdown').forEach(el => el.classList.remove('open'));
+        document.getElementById('backdrop')?.classList.remove('active');
+    }
+    function clearNotifs() {
+        document.querySelectorAll('.notif-item').forEach(el => el.classList.remove('unread'));
+        const badge = document.getElementById('notifBadge');
+        if (badge) badge.style.display = 'none';
+    }
+</script>

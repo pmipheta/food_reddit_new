@@ -3,16 +3,20 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FoodReddit3_day.Data;
 using FoodReddit3_day.Models;
+using System.Text.Json;
+using System.Text;
 
 namespace FoodReddit3_day.Controllers
 {
     public class PostController : Controller
     {
         private readonly FoodForumContext _db;
+        private readonly IConfiguration _config;
 
-        public PostController(FoodForumContext db)
+        public PostController(FoodForumContext db, IConfiguration config)
         {
             _db = db;
+            _config = config;
         }
 
         [HttpGet]
@@ -99,7 +103,12 @@ namespace FoodReddit3_day.Controllers
             if (currentUserId == null)
                 return RedirectToAction("Login", "User");
 
+            // ✅ FIX 1: CommunityList is never posted back — remove from validation
             ModelState.Remove("CommunityList");
+
+            // ✅ FIX 2: CommunityId=0 means user picked the blank option
+            if (model.CommunityId == 0)
+                ModelState.AddModelError("CommunityId", "Please select a community");
 
             if (ModelState.IsValid)
             {
@@ -117,11 +126,26 @@ namespace FoodReddit3_day.Controllers
                 _db.Posts.Add(newPost);
                 await _db.SaveChangesAsync();
 
-                
+                // ✅ สร้าง broadcast notification ให้ทุกคนรู้ว่ามี recipe ใหม่
+                string posterName = HttpContext.Session.GetString("Username") ?? "Someone";
+
+                var notification = new Notification
+                {
+                    SenderId = currentUserId.Value,
+                    ReceiverId = null,                         // null = broadcast ถึงทุกคน
+                    Type = "new_recipe",
+                    Message = $"posted a new recipe: {newPost.Title}",
+                    PostId = newPost.Id,
+                    IsRead = false,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                _db.Notifications.Add(notification);
+                await _db.SaveChangesAsync();
                 return RedirectToAction("Index", "Post");
             }
 
-            
+            // Repopulate dropdown on validation error
             var communities = await _db.Communities.ToListAsync();
             model.CommunityList = communities.Select(c => new SelectListItem
             {
@@ -130,22 +154,6 @@ namespace FoodReddit3_day.Controllers
             }).ToList();
 
             return View(model);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Delete(int id)
-        {
-            int? currentUserId = HttpContext.Session.GetInt32("UserId");
-            if (currentUserId == null) return RedirectToAction("Login", "User");
-
-            var post = await _db.Posts.FirstOrDefaultAsync(p => p.Id == id && p.UserId == currentUserId);
-            if (post != null)
-            {
-                _db.Posts.Remove(post);
-                await _db.SaveChangesAsync();
-            }
-
-            return RedirectToAction("Index", "Profile");
         }
 
         [HttpPost]
@@ -213,40 +221,124 @@ namespace FoodReddit3_day.Controllers
             return View(detail);
         }
 
+       // ============================================================
+        //  AI GENERATE
+        // ============================================================
         [HttpPost]
-        public async Task<IActionResult> AddComment(int postId, string body, int? parentCommentId)
+        [Route("Post/GenerateRecipeFromGemini")]
+        public async Task<IActionResult> GenerateRecipeFromGemini(string ingredients)
         {
-            int? userId = HttpContext.Session.GetInt32("UserId");
-            if (userId == null)
-                return Json(new { success = false, message = "Please login first" });
+            if (string.IsNullOrWhiteSpace(ingredients))
+                return Json(new { success = false, message = "Please provide ingredients first." });
 
-            if (!string.IsNullOrWhiteSpace(body))
-            {
-                var newComment = new Comment
-                {
-                    PostId = postId,
-                    UserId = userId.Value,
-                    Text = body,
-                    ParentCommentId = parentCommentId,
-                    CreatedAt = DateTime.UtcNow
-                };
+            // ✅ FIX 3: Use ?. to avoid NullReferenceException when key is missing
+            string? apiKey = _config["GeminiApi:ApiKey"]?.Trim();
 
-                _db.Comments.Add(newComment);
-                await _db.SaveChangesAsync();
-
-                string username = HttpContext.Session.GetString("Username") ?? "Unknown";
-
+            if (string.IsNullOrEmpty(apiKey))
                 return Json(new
                 {
-                    success = true,
-                    username = username,
-                    text = newComment.Text,
-                    date = newComment.CreatedAt.ToString("dd MMM HH:mm"),
-                    commentId = newComment.Id
+                    success = false,
+                    message = "API Key not found — check appsettings.json at path: GeminiApi:ApiKey"
                 });
-            }
 
-            return Json(new { success = false, message = "Comment cannot be empty" });
+            string prompt = $@"You are a world-class master chef. Create a recipe using these ingredients: {ingredients}
+
+Please reply in English and format the output exactly like this:
+
+🍽️ Recipe Name: [Catchy Recipe Name]
+
+⏱️ Time: Prep X mins | Cook X mins
+
+📝 Ingredients:
+- [Ingredient 1 with quantity]
+- [Ingredient 2 with quantity]
+
+👨‍🍳 Instructions:
+1. [Step 1]
+2. [Step 2]
+
+⭐ Chef's Tip: [Special cooking tip or pairing suggestion]";
+
+            var requestBody = new
+            {
+                contents = new[]
+                {
+                    new { parts = new[] { new { text = prompt } } }
+                },
+                generationConfig = new
+                {
+                    temperature = 0.7,
+                    maxOutputTokens = 4096
+                }
+            };
+
+            using var client = new HttpClient();
+            client.Timeout = TimeSpan.FromSeconds(30);
+
+            string url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={apiKey}";
+
+            try
+            {
+                string jsonBody = JsonSerializer.Serialize(requestBody);
+                var httpContent = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync(url, httpContent);
+                var responseString = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"Gemini Error: {responseString}");
+                    return Json(new
+                    {
+                        success = false,
+                        message = $"Gemini API Error {(int)response.StatusCode}: {responseString}"
+                    });
+                }
+
+                using var jsonDoc = JsonDocument.Parse(responseString);
+                var root = jsonDoc.RootElement;
+
+                if (!root.TryGetProperty("candidates", out var candidates) || candidates.GetArrayLength() == 0)
+                    return Json(new { success = false, message = "Gemini returned no candidates in the response." });
+
+                var firstCandidate = candidates[0];
+
+                if (!firstCandidate.TryGetProperty("content", out var content2))
+                    return Json(new { success = false, message = "No content found in the candidate." });
+
+                if (!content2.TryGetProperty("parts", out var parts) || parts.GetArrayLength() == 0)
+                    return Json(new { success = false, message = "No parts found in the content." });
+
+                string generatedText = parts[0].GetProperty("text").GetString() ?? "No answer provided.";
+
+                return Json(new { success = true, recipeText = generatedText });
+            }
+            catch (TaskCanceledException)
+            {
+                return Json(new { success = false, message = "Timeout — Gemini took longer than 30 seconds." });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+                return Json(new { success = false, message = $"System Error: {ex.Message}" });
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetSuggestions(string term)
+        {
+            if (string.IsNullOrWhiteSpace(term) || term.Length < 1)
+                return Json(new List<string>());
+
+            
+            var suggestions = await _db.Posts
+                .Where(p => p.Title.Contains(term))
+                .OrderBy(p => p.Title)
+                .Take(5)
+                .Select(p => p.Title)
+                .Distinct()
+                .ToListAsync();
+
+            return Json(suggestions);
         }
     }
 }
