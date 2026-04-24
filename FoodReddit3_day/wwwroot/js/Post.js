@@ -1,14 +1,14 @@
-﻿// ── State ──
+﻿
 let currentSearch = '';
 let currentCommunity = '';
 let currentSort = '';
 let debounceTimer = null;
 
-// ── Init on DOM ready ──
+
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.querySelector('.Input-search');
     const container = document.getElementById('post-feed-container');
-    // 🌟 ADDED: ดึงกล่อง Suggestions
+   
     const suggestionsBox = document.getElementById('search-suggestions');
 
     if (!searchInput || !container) return;
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clearTimeout(debounceTimer);
         const term = searchInput.value.trim();
 
-        // 🌟 ADDED: ฟังก์ชันจัดการ Suggestions
+        
         handleSuggestions(term, suggestionsBox, searchInput);
 
         debounceTimer = setTimeout(() => {
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 350);
     });
 
-    // 🌟 ADDED: ปิดกล่อง Suggestions เมื่อคลิกข้างนอก
+    
     document.addEventListener('click', (e) => {
         if (suggestionsBox && !searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
             suggestionsBox.style.display = 'none';
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
             pill.classList.add('active');
-            // 🌟 แก้จาก dataset เป็นgetAttribute เพื่อความแม่นยำ
+            
             currentCommunity = pill.getAttribute('data-community-id') || '';
             fetchPosts();
         });
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// 🌟 ADDED: ฟังก์ชันใหม่สำหรับจัดการรายการแนะนำ (Autocomplete)
+
 async function handleSuggestions(term, box, input) {
     if (!box) return;
     if (term.length < 1) {
@@ -85,13 +85,13 @@ async function handleSuggestions(term, box, input) {
             box.innerHTML = suggestions.map(s => `<div class="suggestion-item">${s}</div>`).join('');
             box.style.display = 'block';
 
-            // เมื่อกดเลือกคำแนะนำ
+            
             box.querySelectorAll('.suggestion-item').forEach(item => {
                 item.addEventListener('click', () => {
                     input.value = item.innerText;
                     box.style.display = 'none';
                     currentSearch = input.value;
-                    fetchPosts(); // ค้นหาทันที
+                    fetchPosts(); 
                 });
             });
         } else {

@@ -14,11 +14,6 @@ namespace FoodReddit3_day.Controllers
             _db = db;
         }
 
-        // ─────────────────────────────────────────────
-        // GET /Notification/GetMyNotifications
-        // ดึง notifications ของ user ที่ login อยู่
-        // (broadcast "new_recipe" + notifications ส่วนตัว)
-        // ─────────────────────────────────────────────
         [HttpGet]
         public async Task<IActionResult> GetMyNotifications()
         {
@@ -30,9 +25,9 @@ namespace FoodReddit3_day.Controllers
                 .Include(n => n.Sender)
                 .Include(n => n.Post)
                 .Where(n =>
-                    // broadcast ถึงทุกคน ยกเว้นตัวเอง
+                    
                     (n.ReceiverId == null && n.SenderId != userId) ||
-                    // ส่งตรงถึง user นี้
+                    
                     n.ReceiverId == userId
                 )
                 .OrderByDescending(n => n.CreatedAt)
@@ -55,32 +50,28 @@ namespace FoodReddit3_day.Controllers
             return Json(new { success = true, notifications = notifs, unreadCount });
         }
 
-        // ─────────────────────────────────────────────
-        // POST /Notification/MarkAllRead
-        // ─────────────────────────────────────────────
+
         [HttpPost]
         public async Task<IActionResult> MarkAllRead()
         {
             int? userId = HttpContext.Session.GetInt32("UserId");
             if (userId == null) return Json(new { success = false });
 
-            // 🌟 ดึงแจ้งเตือนที่ยังไม่ได้อ่านทั้งหมด (ทั้งแบบส่งตรงถึงเรา และแบบ Broadcast ที่คนอื่นโพสต์)
+            
             var unreadNotifs = await _db.Notifications
                 .Where(n => !n.IsRead && (n.ReceiverId == userId || (n.ReceiverId == null && n.SenderId != userId)))
                 .ToListAsync();
 
             foreach (var n in unreadNotifs)
             {
-                n.IsRead = true; // เปลี่ยนเป็นอ่านแล้ว
+                n.IsRead = true; 
             }
 
             await _db.SaveChangesAsync();
             return Json(new { success = true });
         }
 
-        // ─────────────────────────────────────────────
-        // POST /Notification/MarkRead/{id}
-        // ─────────────────────────────────────────────
+
         [HttpPost]
         public async Task<IActionResult> MarkRead(int id)
         {
@@ -93,9 +84,6 @@ namespace FoodReddit3_day.Controllers
             return Json(new { success = true });
         }
 
-        // ─────────────────────────────────────────────
-        // Helper: แปลงเวลาเป็น "2 min ago" ฯลฯ
-        // ─────────────────────────────────────────────
         private static string GetTimeAgo(DateTime createdAt)
         {
             var diff = DateTime.UtcNow - createdAt;

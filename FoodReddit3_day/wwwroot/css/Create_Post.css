@@ -373,3 +373,59 @@ form {
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
+/* ============================================
+   AI Generate Button (Dark Minimalist)
+   ============================================ */
+.AI-Button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 22px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+    
+    background-color: #e8520a;
+    border: 1px solid #333333;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+    .AI-Button::before {
+        
+        font-size: 15px;
+        opacity: 0.9;
+    }
+
+    .AI-Button:hover {
+        
+        background-color: #454545;
+        
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transform: translateY(-1px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .AI-Button:active {
+        transform: translateY(1px);
+    }
+
+    .AI-Button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+        animation: ai-pulse-dark 1.5s infinite alternate;
+    }
+
+@keyframes ai-pulse-dark {
+    0% {
+        opacity: 0.6;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}

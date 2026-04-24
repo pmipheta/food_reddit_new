@@ -1,8 +1,267 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<FoodReddit3_day.Models.Post>
+
+@{
+    
+    Layout = null;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>FoodBoard — Share. Cook. Inspire.</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    
+    
+    <link rel="stylesheet" href="~/css/Landing.css" asp-append-version="true" />
+</head>
+<body>
+    
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a asp-controller="Home" asp-action="Index" class="logo">
+                <div class="logo-icon">🍳</div>
+                <span>FoodBoard</span>
+            </a>
+            <div class="nav-links">
+                <a href="#how" class="nav-link">How it works</a>
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#communities" class="nav-link">Communities</a>
+            </div>
+            <div class="navbar-right">
+                <a asp-controller="User" asp-action="Login" class="btn-login">Log in</a>
+                <a asp-controller="User" asp-action="Register" class="btn-signup">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-bg">
+            <div class="hero-bg-emoji">🍳</div>
+            <div class="hero-bg-emoji">🥘</div>
+            <div class="hero-bg-emoji">🍜</div>
+            <div class="hero-bg-emoji">🥗</div>
+            <div class="hero-bg-emoji">✨</div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-eyebrow">Food Community</div>
+            <h1 class="hero-title">
+                Share Recipes.<br>
+                <span class="accent">Discover Flavours.</span>
+            </h1>
+  
+            <div class="hero-actions">
+                <a asp-controller="User" asp-action="Register" class="btn-hero-primary">Join FoodBoard Free</a>
+                <a asp-controller="Post" asp-action="Index" class="btn-hero-secondary">Browse Recipes</a>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="hero-stat-num">2.2M+</div>
+                    <div class="hero-stat-label">Recipes</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-num">84k+</div>
+                    <div class="hero-stat-label">Chefs</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-num">27</div>
+                    <div class="hero-stat-label">Communities</div>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-hint">Scroll</div>
+    </section>
+
+    <section class="how-section" id="how">
+        <div class="section-inner">
+            <div class="reveal">
+                <div class="section-eyebrow">How it works</div>
+                <h2 class="section-title">Simple as cooking instant noodles</h2>
+                <p class="section-sub">Get started in minutes. No cooking degree required.</p>
+            </div>
+            <div class="how-grid">
+                <div class="how-card reveal">
+                    <div class="how-step">01</div>
+                    <div class="how-icon">👤</div>
+                    <div class="how-title">Create your account</div>
+                    <div class="how-desc">Sign up free in seconds. Pick your favourite food communities and start exploring right away.</div>
+                </div>
+                <div class="how-card reveal">
+                    <div class="how-step">02</div>
+                    <div class="how-icon">📝</div>
+                    <div class="how-title">Share your recipes</div>
+                    <div class="how-desc">Post your best dishes with ingredients and steps. Let the AI Chef auto-generate a recipe if you're stuck.</div>
+                </div>
+                <div class="how-card reveal">
+                    <div class="how-step">03</div>
+                    <div class="how-icon">💬</div>
+                    <div class="how-title">feedback</div>
+                    <div class="how-desc">comments on every post — tips, improvements, and suggestions tailored to your dish.</div>
+                </div>
+                <div class="how-card reveal">
+                    <div class="how-step">04</div>
+                    <div class="how-icon">🍽️</div>
+                    <div class="how-title">Cook & enjoy</div>
+                    <div class="how-desc">Try recipes from the community, upvote your favourites, and build your personal cookbook over time.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="preview-section">
+        <div class="section-inner">
+            <div class="reveal">
+                <div class="section-eyebrow">Community Feed</div>
+                <h2 class="section-title">What's cooking today</h2>
+                <p class="section-sub">A taste of what the community is sharing right now.</p>
+            </div>
+            <div class="preview-layout">
+                <div class="fake-feed reveal">
+                    <div class="fake-post">
+                        <div class="fake-vote">
+                            <div class="vote-arrow up">▲</div>
+                            <div class="vote-num">482</div>
+                            <div class="vote-arrow down">▼</div>
+                        </div>
+                        <div class="fake-post-body">
+                            <div class="fake-post-meta">
+                                <span class="fake-community">Thai Kitchen</span>·
+                                <span>Posted by Chef_Nong</span>·
+                                <span>2h ago</span>
+                            </div>
+                            <div class="fake-post-title">My grandmother's secret Pad See Ew — took me 10 years to perfect this</div>
+                            <div class="fake-post-preview">The key is the wok temperature. Most people cook it too slow and end up with soggy noodles. Here's exactly how my grandmother taught me...</div>
+                            <div class="fake-post-footer">
+                                <span class="fake-stat">💬 134 comments</span>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fake-post">
+                        <div class="fake-vote">
+                            <div class="vote-arrow up">▲</div>
+                            <div class="vote-num">317</div>
+                            <div class="vote-arrow down">▼</div>
+                        </div>
+                        <div class="fake-post-body">
+                            <div class="fake-post-meta">
+                                <span class="fake-community">Fusion Creations</span>·
+                                <span>Posted by Marco_cooks</span>·
+                                <span>5h ago</span>
+                            </div>
+                            <div class="fake-post-title">Tom Yum Risotto — Thai meets Italian and it's absolutely insane</div>
+                            <div class="fake-post-preview">I know it sounds wrong. It's not. Lemongrass-infused arborio rice with tiger prawns, galangal butter and kaffir lime leaf gremolata...</div>
+                            <div class="fake-post-footer">
+                                <span class="fake-stat">💬 89 comments</span>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-sidebar reveal">
+                    <div class="sidebar-widget">
+                        <div class="widget-header">📊 Community Stats</div>
+                        <div class="widget-body">
+                            <div class="widget-stat"><span class="widget-stat-label">Members online</span><span class="widget-stat-val" style="color:#FF4500">1,284</span></div>
+                            <div class="widget-stat"><span class="widget-stat-label">Posts today</span><span class="widget-stat-val">562</span></div>
+                            <div class="widget-stat"><span class="widget-stat-label">comments</span><span class="widget-stat-val">562</span></div>
+                            <div class="widget-stat"><span class="widget-stat-label">Total recipes</span><span class="widget-stat-val">2.2M+</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features-section" id="features">
+        <div class="section-inner">
+            <div class="reveal">
+                <div class="section-eyebrow">Features</div>
+                <h2 class="section-title">Everything a food lover needs</h2>
+                <p class="section-sub">Built for passionate cooks, powered by the latest AI.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card reveal">
+                    <div class="feature-icon orange">🔍</div>
+                    <div class="feature-title">Smart Discovery</div>
+                    <div class="feature-desc">Find exactly what you're craving with our real-time search and smart suggestions as you type.</div>
+                    <span class="feature-tag">Real-time Search</span>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon amber">✨</div>
+                    <div class="feature-title">Recipe Generator</div>
+                    <div class="feature-desc">Got random ingredients in your fridge? Tell our AI Chef and get a unique, detailed recipe in seconds.</div>
+                    <span class="feature-tag">AI-Powered</span>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon blue">💬</div>
+                    <div class="feature-title">Comments</div>
+                    <div class="feature-desc">Discuss recipes in depth with threaded replies up to 2 levels deep</div>
+                    <span class="feature-tag">Community</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="communities-section" id="communities">
+        <div class="section-inner">
+            <div class="reveal">
+                <div class="section-eyebrow">Communities</div>
+                <h2 class="section-title">Find your food tribe</h2>
+                <p class="section-sub">27 communities covering every cuisine on the planet.</p>
+            </div>
+            <div class="comm-grid reveal">
+                <a asp-controller="Post" asp-action="Index" asp-route-communityId="1" class="comm-card">
+                    <div class="comm-banner" style="background:linear-gradient(135deg,#ff6b35,#f59e0b)">🍜</div>
+                    <div class="comm-body"><div class="comm-name">Thai Kitchen</div><div class="comm-count">12.4k members</div></div>
+                </a>
+                <a asp-controller="Post" asp-action="Index" asp-route-communityId="2" class="comm-card">
+                    <div class="comm-banner" style="background:linear-gradient(135deg,#dc2626,#fca5a5)">🍣</div>
+                    <div class="comm-body"><div class="comm-name">Japanese Cuisine</div><div class="comm-count">9.8k members</div></div>
+                </a>
+                <a asp-controller="Communities" asp-action="Index" class="comm-card" style="border-style:dashed;">
+                    <div class="comm-banner" style="background:#fdf8f3">➕</div>
+                    <div class="comm-body"><div class="comm-name" style="color:#8c7b6b">View all 27</div><div class="comm-count">communities</div></div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="cta-inner">
+            <h2 class="cta-title">Ready to start <span>cooking</span>?</h2>
+            <p class="cta-sub">Join thousands of food lovers sharing recipes, getting feedback, and discovering their next favourite dish.</p>
+            <div class="cta-actions">
+                <a asp-controller="User" asp-action="Register" class="btn-hero-primary">Create Free Account</a>
+                <a asp-controller="Post" asp-action="Index" class="btn-hero-secondary">Browse without signing up </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <a href="#" class="logo">🍳<span>FoodBoard</span></a>
+                    <p>The AI-powered food community for passionate home cooks and chefs.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-col">
+                        <h4>Product</h4>
+                        <a asp-controller="Post" asp-action="Index">Feed</a>
+                        <a asp-controller="Communities" asp-action="Index">Communities</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span class="footer-copy">© 2025 FoodBoard. All rights reserved.</span>
+                <span class="footer-made">Made with <span>♥</span> in Thailand</span>
+            </div>
+        </div>
+    </footer>
+    <script src="~/js/landing.js"></script>
+</body>
+</html>

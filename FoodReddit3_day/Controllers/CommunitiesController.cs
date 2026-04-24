@@ -5,8 +5,7 @@ using FoodReddit3_day.Models;
 using AspNetCoreGeneratedDocument;
 namespace FoodReddit3_day.Controllers
 {
-    //[Route("api/[controller]")]
-    //[ApiController]
+
     public class CommunitiesController : Controller
     {
         private readonly FoodForumContext _db;

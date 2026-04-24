@@ -2,9 +2,9 @@
 
 @{
     Layout = null;
-    var userId = Context.Session.GetInt32("UserId"); // 🌟 ดึงไอดีผู้ใช้
+    var userId = Context.Session.GetInt32("UserId"); 
 
-    // 🌟 เช็คว่า User คนนี้โหวตหรือยัง
+    
     int currentUserVote = 0;
     if (userId != null && Model.Votes != null)
     {
@@ -124,7 +124,7 @@
                                                 }
                                                 @usernames
                                             </strong>
-                                            @* <strong>@reply.Author?.Username</strong> *@
+                                            
                                             <span> / @reply.CreatedAt.ToString("dd MMM HH:mm")</span>
                                         </p>
 
@@ -145,7 +145,7 @@
 
     </div>
 
-    @* ── ACTIONS ── *@
+  
     <div class="change">
         <a asp-action="Index" class="goback">← Back to Feed</a>
     </div>

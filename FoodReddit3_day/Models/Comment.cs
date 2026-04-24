@@ -14,16 +14,16 @@ namespace FoodReddit3_day.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        // Foreign Keys
+        
         public int UserId { get; set; }
 
-        [ForeignKey("UserId")] // แก้ปัญหาแบบเดียวกับ Post.cs
+        [ForeignKey("UserId")] 
         public User Author { get; set; }
 
         public int PostId { get; set; }
         public Post Post { get; set; }
 
-        // Self-Referencing for Nested Replies
+        
         public int? ParentCommentId { get; set; }
         public Comment ParentComment { get; set; }
         public ICollection<Comment> Replies { get; set; }

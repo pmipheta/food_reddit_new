@@ -10,7 +10,6 @@ namespace FoodReddit3_day.Controllers
         {
             return View();
         }
-
         public IActionResult Privacy()
         {
             return View();

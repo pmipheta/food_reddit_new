@@ -25,8 +25,7 @@ namespace FoodReddit3_day.Models
 
         public int CommunityId { get; set; }
         public Community Community { get; set; }
-        //public string? ImageUrl { get; set; }
-        // Navigation Properties
+
         public ICollection<Comment> Comments { get; set; }
         public ICollection<Vote> Votes { get; set; }
 

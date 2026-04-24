@@ -103,10 +103,10 @@ namespace FoodReddit3_day.Controllers
             if (currentUserId == null)
                 return RedirectToAction("Login", "User");
 
-            // ✅ FIX 1: CommunityList is never posted back — remove from validation
+            
             ModelState.Remove("CommunityList");
 
-            // ✅ FIX 2: CommunityId=0 means user picked the blank option
+            
             if (model.CommunityId == 0)
                 ModelState.AddModelError("CommunityId", "Please select a community");
 
@@ -126,13 +126,13 @@ namespace FoodReddit3_day.Controllers
                 _db.Posts.Add(newPost);
                 await _db.SaveChangesAsync();
 
-                // ✅ สร้าง broadcast notification ให้ทุกคนรู้ว่ามี recipe ใหม่
+                
                 string posterName = HttpContext.Session.GetString("Username") ?? "Someone";
 
                 var notification = new Notification
                 {
                     SenderId = currentUserId.Value,
-                    ReceiverId = null,                         // null = broadcast ถึงทุกคน
+                    ReceiverId = null,                         
                     Type = "new_recipe",
                     Message = $"posted a new recipe: {newPost.Title}",
                     PostId = newPost.Id,
@@ -145,7 +145,7 @@ namespace FoodReddit3_day.Controllers
                 return RedirectToAction("Index", "Post");
             }
 
-            // Repopulate dropdown on validation error
+            
             var communities = await _db.Communities.ToListAsync();
             model.CommunityList = communities.Select(c => new SelectListItem
             {
@@ -221,9 +221,7 @@ namespace FoodReddit3_day.Controllers
             return View(detail);
         }
 
-       // ============================================================
-        //  AI GENERATE
-        // ============================================================
+
         [HttpPost]
         [Route("Post/GenerateRecipeFromGemini")]
         public async Task<IActionResult> GenerateRecipeFromGemini(string ingredients)
@@ -231,7 +229,7 @@ namespace FoodReddit3_day.Controllers
             if (string.IsNullOrWhiteSpace(ingredients))
                 return Json(new { success = false, message = "Please provide ingredients first." });
 
-            // ✅ FIX 3: Use ?. to avoid NullReferenceException when key is missing
+            
             string? apiKey = _config["GeminiApi:ApiKey"]?.Trim();
 
             if (string.IsNullOrEmpty(apiKey))
@@ -241,11 +239,19 @@ namespace FoodReddit3_day.Controllers
                     message = "API Key not found — check appsettings.json at path: GeminiApi:ApiKey"
                 });
 
-            string prompt = $@"You are a world-class master chef. Create a recipe using these ingredients: {ingredients}
+            string prompt = $@"You are a world-class master chef. 
+Create a recipe using STRICTLY ONLY these ingredients: {ingredients}.
+
+CRITICAL RULES:
+1. DO NOT add any extra ingredients (no vegetables, no extra spices, no liquids) unless they are in the provided list.
+2. If only one ingredient is provided, create a dish that uses ONLY that ingredient in different ways (e.g., crispy, seared, boiled).
+3. If it's impossible to make a dish, try your best with only what's given.
 
 Please reply in English and format the output exactly like this:
 
 🍽️ Recipe Name: [Catchy Recipe Name]
+
+🏷️ Community: [Suggest the most relevant category e.g. Thai Kitchen, Italian Kitchen, Healthy Eats, Vegan World, etc.]
 
 ⏱️ Time: Prep X mins | Cook X mins
 
@@ -254,8 +260,8 @@ Please reply in English and format the output exactly like this:
 - [Ingredient 2 with quantity]
 
 👨‍🍳 Instructions:
-1. [Step 1]
-2. [Step 2]
+- [Step 1]
+- [Step 2]
 
 ⭐ Chef's Tip: [Special cooking tip or pairing suggestion]";
 
@@ -267,7 +273,7 @@ Please reply in English and format the output exactly like this:
                 },
                 generationConfig = new
                 {
-                    temperature = 0.7,
+                    temperature = 0.3,
                     maxOutputTokens = 4096
                 }
             };

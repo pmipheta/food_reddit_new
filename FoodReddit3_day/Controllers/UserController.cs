@@ -5,8 +5,6 @@ using FoodReddit3_day.Models;
 using Microsoft.AspNetCore.Http; 
 namespace FoodReddit3_day.Controllers
 {
-    //[Route("api/[controller]")]
-    //[ApiController]
     public class UserController : Controller
     {
         private readonly FoodForumContext _db;
@@ -72,7 +70,7 @@ namespace FoodReddit3_day.Controllers
             {
                 Username = request.Username,
                 PasswordHash = request.PasswordHash,
-                //Email = request.Email
+                
             };
 
             _db.User.Add(newUser);

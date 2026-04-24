@@ -2,7 +2,7 @@
     event.preventDefault();
     event.stopPropagation();
 
-    if (!confirm('Are you sure you want to delete this recipe?')) return;
+    
 
     try {
         const response = await fetch(`/Profile/Delete?id=${postId}`, {
