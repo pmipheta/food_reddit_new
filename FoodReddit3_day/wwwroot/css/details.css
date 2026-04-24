@@ -588,3 +588,636 @@ hr {
     ::-webkit-scrollbar-thumb:hover {
         background: var(--text-faint);
     }
+/* ============================================================
+   FoodBoard — Details Page  (Premium Edition)
+   Font: Cormorant Garamond + DM Sans
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+    --bg: #f2ebe0;
+    --bg-card: #ffffff;
+    --bg-warm: #faf6ef;
+    --bg-subtle: #f5f0e8;
+    --orange: #d4521a;
+    --orange-light: #fef0e7;
+    --orange-dark: #b03e10;
+    --gold: #c8930a;
+    --gold-light: #fdf5e0;
+    --amber: #e8a020;
+    --text-dark: #18120a;
+    --text-body: #38280e;
+    --text-muted: #7a6448;
+    --text-faint: #b0997a;
+    --border: #e0d3c0;
+    --border-strong: #c4b090;
+    --radius-sm: 6px;
+    --radius: 12px;
+    --radius-lg: 18px;
+    --radius-xl: 24px;
+    --shadow-sm: 0 1px 3px rgba(40,20,5,0.07);
+    --shadow: 0 4px 18px rgba(40,20,5,0.09);
+    --shadow-lg: 0 10px 40px rgba(40,20,5,0.13);
+    --font-display: 'Cormorant Garamond', Georgia, serif;
+    --font: 'DM Sans', system-ui, sans-serif;
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text-body);
+    font-size: 15px;
+    line-height: 1.65;
+    min-height: 100vh;
+    padding: 40px 20px 80px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23f2ebe0'/%3E%3Crect x='0' y='0' width='1' height='1' fill='%23e8dece' opacity='0.4'/%3E%3Crect x='2' y='2' width='1' height='1' fill='%23e8dece' opacity='0.3'/%3E%3C/svg%3E");
+}
+
+/* ============================================================
+   MAIN CONTAINER
+   ============================================================ */
+.container-header {
+    max-width: 780px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    animation: fadeUp 0.45s var(--ease) both;
+}
+
+/* ============================================================
+   POST HEADER CARD
+   ============================================================ */
+.post-header {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 36px 40px 28px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+    /* Gold top bar */
+    .post-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--orange) 0%, var(--amber) 50%, var(--gold) 100%);
+    }
+
+    /* Watermark emoji */
+    .post-header::after {
+        content: '🍽️';
+        position: absolute;
+        bottom: -20px;
+        right: -10px;
+        font-size: 130px;
+        opacity: 0.035;
+        pointer-events: none;
+        line-height: 1;
+        transform: rotate(-10deg);
+    }
+
+/* ── Breadcrumb ── */
+.header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.header-community {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--orange);
+    background: var(--orange-light);
+    padding: 3px 12px;
+    border-radius: 99px;
+    border: 1px solid rgba(212,82,26,0.15);
+    letter-spacing: 0.02em;
+}
+
+.header-user {
+    font-size: 12px;
+    color: var(--text-faint);
+}
+
+.header-date {
+    font-size: 12px;
+    color: var(--text-faint);
+    font-style: italic;
+}
+
+/* ── Post title ── */
+.Title {
+    font-family: var(--font-display);
+    font-size: clamp(26px, 5vw, 38px);
+    font-weight: 700;
+    color: var(--text-dark);
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    margin-bottom: 12px;
+}
+
+/* ── Posted by line ── */
+.text {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+    font-style: italic;
+}
+
+    .text strong {
+        color: var(--text-body);
+        font-style: normal;
+    }
+
+/* ── Body ── */
+.information {
+    background: var(--bg-warm);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    position: relative;
+}
+
+    .information::before {
+        content: '"';
+        font-family: var(--font-display);
+        font-size: 64px;
+        color: var(--gold);
+        opacity: 0.18;
+        position: absolute;
+        top: -10px;
+        left: 14px;
+        line-height: 1;
+        pointer-events: none;
+    }
+
+.recipes {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--text-body);
+    white-space: pre-wrap;
+}
+
+/* ── Vote + stat row ── */
+.start-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    position: relative;
+}
+
+    .start-item::before {
+        content: '';
+        position: absolute;
+        top: -1px;
+        left: 0;
+        width: 48px;
+        height: 2px;
+        background: linear-gradient(90deg, var(--orange), var(--amber));
+        border-radius: 2px;
+    }
+
+.item {
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+/* Vote pill */
+.score-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    background: var(--bg-warm);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+}
+
+    .score-icon:hover {
+        border-color: var(--orange);
+        background: var(--orange-light);
+        color: var(--orange);
+    }
+
+    .score-icon:active {
+        transform: scale(0.85);
+    }
+
+    .score-icon.upvoted {
+        background: var(--orange);
+        color: #fff;
+        border-color: var(--orange);
+    }
+
+    .score-icon.downvoted {
+        background: #4a8ef5;
+        color: #fff;
+        border-color: #4a8ef5;
+    }
+
+.score-number {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-dark);
+    min-width: 28px;
+    text-align: center;
+    transition: color 0.18s, transform 0.18s;
+}
+
+    .score-number.upvoted {
+        color: var(--orange);
+    }
+
+    .score-number.downvoted {
+        color: #4a8ef5;
+    }
+
+/* Comment count badge */
+.item:last-child {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 99px;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-left: 4px;
+}
+
+/* ============================================================
+   COMMENT SECTION CARD
+   ============================================================ */
+.commnet-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 32px 40px 36px;
+    box-shadow: var(--shadow);
+}
+
+.comment-count {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-dark);
+    letter-spacing: -0.01em;
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ── Comment input ── */
+.comment-area {
+    margin-bottom: 28px;
+}
+
+    .comment-area form,
+    .comment-area-form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .comment-area textarea,
+    #main-comment-body {
+        width: 100%;
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--bg-warm);
+        font-family: var(--font);
+        font-size: 14px;
+        color: var(--text-dark);
+        padding: 14px 18px;
+        resize: vertical;
+        min-height: 90px;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+        line-height: 1.65;
+    }
+
+        .comment-area textarea:focus,
+        #main-comment-body:focus {
+            border-color: var(--gold);
+            background: var(--bg-card);
+            box-shadow: 0 0 0 3px rgba(200,147,10,0.10);
+        }
+
+        .comment-area textarea::placeholder,
+        #main-comment-body::placeholder {
+            color: var(--text-faint);
+            font-style: italic;
+        }
+
+    .comment-area button,
+    .btn-comment {
+        align-self: flex-end;
+        font-family: var(--font);
+        font-size: 13px;
+        font-weight: 700;
+        padding: 10px 26px;
+        border-radius: 99px;
+        border: none;
+        background: var(--orange);
+        color: #fff;
+        cursor: pointer;
+        box-shadow: 0 3px 10px rgba(212,82,26,0.32);
+        transition: all 0.18s var(--ease);
+        letter-spacing: 0.02em;
+    }
+
+        .comment-area button:hover,
+        .btn-comment:hover {
+            background: var(--orange-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 5px 16px rgba(212,82,26,0.40);
+        }
+
+        .comment-area button:active {
+            transform: scale(0.96);
+        }
+
+hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin-bottom: 24px;
+    position: relative;
+}
+
+/* ── No comments ── */
+.no-comments {
+    text-align: center;
+    color: var(--text-faint);
+    font-style: italic;
+    padding: 28px 0;
+    font-size: 14px;
+}
+
+/* ============================================================
+   COMMENT ITEM  ← used by BOTH server-render AND JS inject
+   ============================================================ */
+.comment-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px 22px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.2s, border-color 0.2s;
+    animation: fadeUp 0.3s var(--ease) both;
+}
+
+    .comment-item:hover {
+        box-shadow: var(--shadow);
+        border-color: var(--border-strong);
+    }
+
+.comment-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    margin-left: 15px;
+}
+
+.comment-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--amber) 100%);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-family: var(--font-display);
+}
+
+.comment-author {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-dark);
+    letter-spacing: -0.01em;
+}
+
+.comment-time {
+    font-size: 11.5px;
+    color: var(--text-faint);
+    font-style: italic;
+}
+
+/* ── Comment text ── */
+.comment-text {
+    font-size: 14.5px;
+    color: var(--text-body);
+    line-height: 1.7;
+    margin-bottom: 14px;
+}
+
+/* ── Reply form (inside comment) ── */
+.reply-form {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    background: var(--bg-warm);
+    border: 1.5px solid var(--border);
+    border-radius: 99px;
+    padding: 5px 5px 5px 16px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+    .reply-form:focus-within {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 3px rgba(200,147,10,0.09);
+        background: var(--bg-card);
+    }
+
+    .reply-form input[name="body"] {
+        flex: 1;
+        border: none;
+        background: transparent;
+        font-family: var(--font);
+        font-size: 13.5px;
+        color: var(--text-dark);
+        outline: none;
+        min-width: 0;
+    }
+
+        .reply-form input[name="body"]::placeholder {
+            color: var(--text-faint);
+            font-style: italic;
+        }
+
+    .reply-form button {
+        font-family: var(--font);
+        font-size: 12px;
+        font-weight: 700;
+        padding: 8px 18px;
+        border-radius: 99px;
+        border: none;
+        background: var(--orange);
+        color: #fff;
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: background 0.15s, transform 0.1s;
+    }
+
+        .reply-form button:hover {
+            background: var(--orange-dark);
+        }
+
+        .reply-form button:active {
+            transform: scale(0.93);
+        }
+
+/* ── Replies container ── */
+.replies-container {
+    margin-top: 16px;
+    margin-left: 12px;
+    padding-left: 18px;
+    border-left: 2px solid var(--border);
+}
+
+/* ── Reply item ── */
+.reply-item {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    animation: fadeUp 0.25s var(--ease) both;
+}
+
+    .reply-item:last-child {
+        border-bottom: none;
+    }
+
+    .reply-item .comment-meta {
+        margin-bottom: 6px;
+    }
+
+    .reply-item .comment-text {
+        margin-bottom: 0;
+        font-size: 14px;
+    }
+
+/* ============================================================
+   BACK BUTTON
+   ============================================================ */
+.change {
+    margin-top: 4px;
+}
+
+.goback {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    padding: 8px 18px;
+    border-radius: 99px;
+    border: 1.5px solid var(--border);
+    background: var(--bg-card);
+    transition: all 0.15s;
+}
+
+    .goback:hover {
+        color: var(--orange);
+        border-color: var(--orange);
+        background: var(--orange-light);
+        transform: translateX(-2px);
+    }
+
+/* ============================================================
+   ANIMATION
+   ============================================================ */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 640px) {
+    body {
+        padding: 20px 12px 60px;
+    }
+
+    .post-header,
+    .commnet-section {
+        padding: 24px 20px 22px;
+    }
+
+    .Title {
+        font-size: 24px;
+    }
+
+    .reply-form {
+        flex-wrap: wrap;
+        border-radius: var(--radius);
+        padding: 10px 14px;
+    }
+
+        .reply-form button {
+            width: 100%;
+            text-align: center;
+        }
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 3px;
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--text-faint);
+    }

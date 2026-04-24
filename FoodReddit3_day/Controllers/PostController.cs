@@ -346,5 +346,39 @@ Please reply in English and format the output exactly like this:
 
             return Json(suggestions);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> AddComment(int postId, string body, int? parentCommentId = null)
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+                return Json(new { success = false, message = "Please login first" });
+
+            if (string.IsNullOrWhiteSpace(body))
+                return Json(new { success = false, message = "Comment cannot be empty" });
+
+            var comment = new Comment
+            {
+                PostId = postId,
+                UserId = userId.Value,
+                Text = body,
+                ParentCommentId = parentCommentId,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _db.Comments.Add(comment);
+            await _db.SaveChangesAsync();
+
+            string username = HttpContext.Session.GetString("Username") ?? "Unknown";
+
+            return Json(new
+            {
+                success = true,
+                commentId = comment.Id,
+                username = username,
+                date = comment.CreatedAt.ToString("dd MMM HH:mm"),
+                text = body
+            });
+        }
     }
 }
